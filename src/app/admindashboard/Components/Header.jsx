@@ -8,11 +8,19 @@ import Image from 'next/image';
 import img from '../../Images/sell.jpg';
 import gonukkad from '../../Images/logo.webp';
 
-const Header = () => {
+const Header = ({prodata}) => {
   const data = [
     { title: "Dashboard", icon: <CiHome />, link: "/admindashboard" }, 
+    { title: "Vendors", icon: <FaUsers />, link: "/admindashboard/users" },
+    { title: "Analytics", icon: <FaChartBar />, link: "/admindashboard/analytics" }, 
+    { title: "Message", icon: <FaEnvelope />, link: "/admindashboard" },
+    { title: "Collection", icon: <BsCollection />, link: "/admindashboard" },
+     // Add link for Users
+  ];
+  const data3 = [
+    // { title: "Dashboard", icon: <CiHome />, link: "/admindashboard" }, 
     { title: "Vendors", icon: <FaUsers />, link: "admindashboard/users" },
-    { title: "Analytics", icon: <FaChartBar />, link: "/admindashboard" }, 
+    { title: "Analytics", icon: <FaChartBar />, link: "/admindashboard/analytics" }, 
     { title: "Message", icon: <FaEnvelope />, link: "/admindashboard" },
     { title: "Collection", icon: <BsCollection />, link: "/admindashboard" },
      // Add link for Users
@@ -34,7 +42,7 @@ const Header = () => {
           <Image src={gonukkad} alt={"alt"} className='h-20 w-60 rounded-full' />
           {/* <h1 className='text-2xl font-semibold'>Admin Portal</h1> */}
           </div>
-          {data.map((item, index) => (
+          {prodata!=="vendor"?(<>{data.map((item, index) => (
             <Link key={index} href={item.link}>
                 <li className='flex items-center hover:bg-slate-300 p-4 space-y-4'>
                   <div className='flex items-center space-x-2'>
@@ -44,12 +52,23 @@ const Header = () => {
                   </div>
             </li>
               </Link>
-          ))}
+          ))}</>):(<>{data3.map((item, index) => (
+            <Link key={index} href={item.link}>
+                <li className='flex items-center hover:bg-slate-300 p-4 space-y-4'>
+                  <div className='flex items-center space-x-2'>
+                    
+                <span className='text-[#ec3e20]'>{item.icon}</span>
+                <span>{item.title}</span>
+                  </div>
+            </li>
+              </Link>
+          ))}</>)}
         </ul>
 
         <hr />
         <div className='flex flex-col justify-start mt-8'>
           <h1 className='text-2xl pl-8'>Contact</h1>
+          {/* <h1 className='text-2xl pl-8'>{prodata}</h1> */}
           <ul className='flex flex-col items-center justify-center'>
             {contactdata.map((item, index) => (
               <li key={index} className='flex w-full py-1 gap-4 hover:bg-slate-300 mt-8'>

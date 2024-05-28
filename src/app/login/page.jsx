@@ -7,11 +7,11 @@ import { toast } from "react-hot-toast";
 import { Toaster } from 'react-hot-toast';
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
-
+import {useUser}  from '../context/userContext'
 export default function  SignUp() {
 
     const router = useRouter();
-
+    const { setUser } = useUser();
     const [loading, setLoading] = useState(false);
     const [email, setEmail]= useState("")
     const [password, setPassword]= useState("")
@@ -24,10 +24,14 @@ export default function  SignUp() {
             const response = await axios.post('http://localhost:3001/login', { email, password }, {
                 withCredentials:true
             });
-            console.log("Login success", response.data);
+            
+            console.log("Login success", response.data.Role);
+            
             if(response.data.login)
             {
                 toast.success("Login success");
+                // setUser(response.data.Role);
+                console.log("user",useUser) // Set user data in context
                 router.push("/admindashboard");
             }
             else

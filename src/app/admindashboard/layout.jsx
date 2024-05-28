@@ -10,7 +10,7 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-
+import {useUser} from '../context/userContext'
 
 export default function RootLayout({ children }) {
     const [message, setMessage] = useState()
@@ -55,6 +55,8 @@ export default function RootLayout({ children }) {
 //       .catch(err => console.log(err))
 //   })
   const hideHeader = hideHeaderRoutes.includes(pathname);
+  const prodata="admin"
+
 
   return (
     <html lang="en">
@@ -62,7 +64,7 @@ export default function RootLayout({ children }) {
         <div className="w-screen overflow-hidden flex h-screen">
           {!hideHeader && (
             <div className="w-[20%]">
-              <Header />
+              <Header prodata={prodata}  />
             </div>
           )}
           <div className={hideHeader ? "w-full" : "w-[80%]"}>

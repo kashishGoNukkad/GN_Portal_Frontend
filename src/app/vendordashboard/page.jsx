@@ -28,24 +28,24 @@ const Dashboard = () => {
     // }
    
 
-//   const data = [
-//     {
-//       title: "david",
-//       value: "23423",
-//     },
-//     {
-//       title: "david",
-//       value: "23423",
-//     },
-//     {
-//       title: "david",
-//       value: "23423",
-//     },
-//     {
-//       title: "david",
-//       value: "23423",
-//     },
-//   ];
+  const data = [
+    {
+      title: "david",
+      value: "23423",
+    },
+    {
+      title: "david",
+      value: "23423",
+    },
+    {
+      title: "david",
+      value: "23423",
+    },
+    {
+      title: "david",
+      value: "23423",
+    },
+  ];
   return (
     <>
     {/* {message} */}

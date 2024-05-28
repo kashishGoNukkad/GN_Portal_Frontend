@@ -10,7 +10,7 @@ import gonukkad from '../../Images/logo.webp';
 
 const Header = () => {
   const data = [
-    { title: "Dashboard", icon: <CiHome />, link: "/vendordashboard" }, 
+    // { title: "Dashboard", icon: <CiHome />, link: "/vendordashboard" }, 
     { title: "Vendors", icon: <FaUsers />, link: "/vendordashboard/users" },
     { title: "Analytics", icon: <FaChartBar />, link: "/vendordashboard" }, 
     { title: "Message", icon: <FaEnvelope />, link: "/vendordashboard" },
@@ -48,7 +48,7 @@ const Header = () => {
         </ul>
 
         <hr />
-        <div className='flex flex-col justify-start mt-8'>
+        {/* <div className='flex flex-col justify-start mt-8'>
           <h1 className='text-2xl pl-8'>Contact</h1>
           <ul className='flex flex-col items-center justify-center'>
             {contactdata.map((item, index) => (
@@ -66,7 +66,7 @@ const Header = () => {
               </li>
             ))}
           </ul>
-        </div>
+        </div> */}
       </div>
     </>
   );
