@@ -11,7 +11,8 @@ import gonukkad from '../../Images/logo.webp';
 const Header = () => {
   const data = [
     // { title: "Dashboard", icon: <CiHome />, link: "/vendordashboard" }, 
-    { title: "Vendors", icon: <FaUsers />, link: "/vendordashboard/users" },
+    { title: "Vendors", icon: <FaUsers />, link: "/vendordashboard/vendors" },
+    { title: "Users", icon: <FaUsers />, link: "/vendordashboard/users" },
     { title: "Analytics", icon: <FaChartBar />, link: "/vendordashboard" }, 
     { title: "Message", icon: <FaEnvelope />, link: "/vendordashboard" },
     { title: "Collection", icon: <BsCollection />, link: "/vendordashboard" },

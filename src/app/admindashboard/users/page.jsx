@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+
 import img from "../../Images/sell.jpg";
 import Image from "next/image";
 import { IoIosAdd } from "react-icons/io";
@@ -44,14 +44,21 @@ const Users = () => {
   ];
 
   const fetchVendors = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/allendusers');
+      console.log(response.data.vendors)
   
-      const response = await axios.get('http://localhost:3001/allvendors');
-      // console.log(response.data)
-      const reversedVendors = response.data.vendors.reverse();
+      const filteredVendors = response.data.vendors.filter(vendors => vendors.status === 'true' && vendors.role==='user');
+  
+      const reversedVendors = filteredVendors.reverse();
+  
       console.log("Reversed Vendors:", reversedVendors);
       setData1(reversedVendors);
-      
+    } catch (error) {
+      console.error("Failed to fetch vendors:", error);
+    }
   };
+  
   useEffect(() => {
   fetchVendors();
 }, []);
@@ -67,17 +74,18 @@ const Users = () => {
   // const handleDelete = async () => {
   //   console.log(newdata);
   //   try {
-  //     const response = await axios.put(`http://localhost:3001/deletevendor/${newdata._id}`, newdata);
-  //     console.log("Vendor deleted Successfully:", response.data);
+  //     const response = await axios.delete(`http://localhost:3001/deletevendor/${data1[index]._id}`, newdata);
+  //     fetchVendors();
+  //     toast.success("Vendor deleted Successfully!");
   //     } catch (error) {
-  //     console.error("Failed to delete vendor:", error.response);
+  //     toast.error("Failed to delete vendor!");
   //   }
   // }
   
 
   const handleAdd = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/createvendor', formData, {
+      const response = await axios.post('http://localhost:3001/createenduser', formData, {
         withCredentials: true,
       });
 
@@ -104,9 +112,9 @@ const Users = () => {
   };
 
   const handleEdit = async () => {
-    console.log(newdata);
+    
     try {
-      const response = await axios.put(`http://localhost:3001/editvendor/${newdata._id}`, newdata);
+      const response = await axios.put(`http://localhost:3001/editenduser/${newdata._id}`, newdata);
       fetchVendors();
       setShowEditForm(false)
       toast.success("Vendor edited successfully!")
@@ -127,16 +135,35 @@ const Users = () => {
     setShowEditForm(false)
   };
   const[newdata,setNewdata]=useState({});
+  const[deldata,setDelData]=useState({});
   
   const editoption = (e,index) => {
-    // alert("edit Option"+index);
     setShowEditForm(true)
-    // console.log(data1);
     const temp=data1[index];
     setNewdata(temp)
     console.log(newdata)
 
   };
+  const Deletetoption = async(e,index) => {
+    
+    // const temp=data1[index];
+
+    
+    
+    try {
+      const response = await axios.delete(`http://localhost:3001/deleteenduser/${data1[index]._id}`, newdata);
+      fetchVendors();
+      toast.success("Vendor deleted Successfully!");
+      } catch (error) {
+      toast.error("Failed to delete vendor!");
+    }
+
+
+
+  };
+
+  
+ 
 
   
   // const fielterData=["username","email",];\
@@ -154,10 +181,10 @@ const Users = () => {
   return (
     <>
       <div className="relative h-full overflow-scroll">
-      <Toaster position="top-right" reverseOrder={false} />
+      <Toaster position="top-center" reverseOrder={false} />
         <div className="p-4 w-full">
           <div className="flex w-full justify-between items-center p-4">
-            <div className="text-3xl">Vendors</div>
+            <div className="text-3xl">Users</div>
             <div className="flex h-fit gap-3">
               <button
                 className="px-4 py-2 bg-[#ec3e20] text-white rounded-md border border-1 flex items-center border-gray-300"
@@ -210,7 +237,7 @@ const Users = () => {
                         </Tooltip>
                         <Tooltip text="Delete">
                           <button className="flex items-center gap-1 bg-white border text-black p-1 rounded">
-                            <CiTrash className="size-5" />
+                            <CiTrash className="size-5" onClick={(e)=>Deletetoption(e,index)}  />
                           </button>
                         </Tooltip>
                       </div>

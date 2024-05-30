@@ -11,7 +11,8 @@ import gonukkad from '../../Images/logo.webp';
 const Header = ({prodata}) => {
   const data = [
     { title: "Dashboard", icon: <CiHome />, link: "/admindashboard" }, 
-    { title: "Vendors", icon: <FaUsers />, link: "/admindashboard/users" },
+    { title: "Vendors", icon: <FaUsers />, link: "/admindashboard/vendors" },
+    { title: "Users", icon: <FaUsers />, link: "/admindashboard/users" },
     { title: "Analytics", icon: <FaChartBar />, link: "/admindashboard/analytics" }, 
     { title: "Message", icon: <FaEnvelope />, link: "/admindashboard" },
     { title: "Collection", icon: <BsCollection />, link: "/admindashboard" },
@@ -19,7 +20,8 @@ const Header = ({prodata}) => {
   ];
   const data3 = [
     // { title: "Dashboard", icon: <CiHome />, link: "/admindashboard" }, 
-    { title: "Vendors", icon: <FaUsers />, link: "admindashboard/users" },
+    { title: "Vendors", icon: <FaUsers />, link: "admindashboard/vendors" },
+    { title: "Users", icon: <FaUsers />, link: "admindashboard/users" },
     { title: "Analytics", icon: <FaChartBar />, link: "/admindashboard/analytics" }, 
     { title: "Message", icon: <FaEnvelope />, link: "/admindashboard" },
     { title: "Collection", icon: <BsCollection />, link: "/admindashboard" },

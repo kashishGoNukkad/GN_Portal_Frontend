@@ -71,7 +71,7 @@ export default function  SignUp() {
                     <p className="pt-4 text-[#101831]">Log in to your account</p>
                     <div className="h-0.5 w-11/12 bg-orange-500 my-2"></div>
                 </div>
-                <Toaster position="top-right" reverseOrder={false} />
+                <Toaster position="top-center" reverseOrder={false} />
                 <div className="w-full h-fit flex flex-col items-center justify-center pt-4">
                     <div className="w-11/12 h-fit flex flex-col relative">
                         <input
