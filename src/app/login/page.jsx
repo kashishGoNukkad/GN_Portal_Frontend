@@ -1,22 +1,28 @@
 'use client'
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Toaster } from 'react-hot-toast';
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
-import {useUser}  from '../context/userContext'
+// import {useUser}  from '../context/userContext'
+import {useUser} from '../context/userContext'
+import { AddRole } from "../Redux/slice";
+import { useDispatch } from "react-redux";
+
 export default function  SignUp() {
 
     const router = useRouter();
-    const { setUser } = useUser();
+    // const { setUser } = useUser();
     const [loading, setLoading] = useState(false);
     const [email, setEmail]= useState("")
     const [password, setPassword]= useState("")
     const [errorMessage, setErrorMessage] = useState("");
-
+    const [role, setRole]= useState("")
+    const dispatch = useDispatch()
+    
     const onLogin = async () => {
         try 
         {
@@ -24,14 +30,18 @@ export default function  SignUp() {
             const response = await axios.post('http://localhost:3001/login', { email, password }, {
                 withCredentials:true
             });
+            console.log("response",response.data.Role)
+            setRole( response.data.Role );
             
-            console.log("Login success", response.data.Role);
+            
             
             if(response.data.login)
             {
                 toast.success("Login success");
-                // setUser(response.data.Role);
-                console.log("user",useUser) // Set user data in context
+                
+               
+                
+                 
                 router.push("/admindashboard");
             }
             else
@@ -49,7 +59,15 @@ export default function  SignUp() {
             setLoading(false);
         }
     }
+    const userDispatch = ()=>{
+        dispatch(AddRole(role))
+       
+    }
+    useEffect(()=>{
+        userDispatch()
+    },[role])
 
+    
     const onForgot = async () => {
         try {
           const response = await axios.post('http://localhost:3001/forgetmail', { email });
@@ -95,7 +113,7 @@ export default function  SignUp() {
                         <input
                             className="w-full pt-2  pl-2 h-16 block border-0 border-b-[1px] outline-none appearance-none focus:outline-none peer cursor-pointer"
                             id="password"
-                            type="text"
+                            type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value )}
                             placeholder=" "

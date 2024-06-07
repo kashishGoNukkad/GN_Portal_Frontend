@@ -1,6 +1,6 @@
-// context/UserContext.js
+// context/userContext.js
 "use client"
-import { createContext, useContext, useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 
 const UserContext = createContext();
 
@@ -10,8 +10,13 @@ export const UserProvider = ({ children }) => {
   return (
     <UserContext.Provider value={{ user, setUser }}>
       {children}
+ 
     </UserContext.Provider>
   );
 };
 
-export const useUser = () => useContext(UserContext);
+export const useUser = () => {
+  return useContext(UserContext);
+};
+
+

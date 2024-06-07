@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast';
 export default function Home() {
   return (
     <>
-    <Toaster position="top-right" reverseOrder={false} />
+    {/* <Toaster position="top-right" reverseOrder={false} /> */}
       <Login/>
     </>
   );

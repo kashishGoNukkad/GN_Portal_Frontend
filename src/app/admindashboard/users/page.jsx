@@ -20,7 +20,7 @@ const Users = () => {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
-    phone: "",
+    mobile: "",
     password: "",
   });
 
@@ -34,7 +34,7 @@ const Users = () => {
       type: "email",
     },
     {
-      label: "phone",
+      label: "mobile",
       type: "text",
     },
     {
@@ -89,18 +89,18 @@ const Users = () => {
         withCredentials: true,
       });
 
-      console.log("Vendor Added Successfully:", response.data);
+      console.log("User Added Successfully:", response.data);
       setShowForm(false)
       setFormData({
         username: "",
         email: "",
-        phone: "",
+        mobile: "",
         password: "",
       });
-      toast.success("Vendor has been registered successfully!");
+      toast.success("User has been registered successfully!");
       fetchVendors();
     } catch (error) {
-      console.error("Vendor registration failed", error.response);
+      console.error("User registration failed", error.response);
 
       if (error.response && error.response.data && error.response.data.error) {
         // setErrorMessage(error.response.data.error);
@@ -176,7 +176,7 @@ const Users = () => {
     console.log(newdata)
   }
 
-  const filterData=["username","email","phone"]
+  const filterData=["username","email","mobile"]
   
   return (
     <>
@@ -223,7 +223,7 @@ const Users = () => {
                     />
                     {item.username}
                   </td>
-                  <td className="py-4">{item.phone}</td>
+                  <td className="py-4">{item.mobile}</td>
                   <td className="py-4">{item.email}</td>
                   <td className="py-4">{item.role}</td>
                   <td className="absolute left-56 top-1/2 w-10">

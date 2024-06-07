@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
         axios.get('http://localhost:3001/dashboard')
         .then(res => {
            
-            console.log("res")
+            
             if(res.data.valid) {
                 setMessage(res.data.message)
             } else {

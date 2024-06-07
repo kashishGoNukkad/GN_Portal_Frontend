@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { UserProvider } from './context/userContext'
+import { Providers } from "./Redux/providers";
+// import { UserProvider } from './context/userContext'
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -13,9 +14,12 @@ export default function RootLayout({ children }) {
     <html lang="en">
       {/* <body className={inter.className}>{children}</body> */}
       <body className={inter.className}>
-        <UserProvider> {/* Wrap the children with UserProvider */}
-          {children}
-        </UserProvider>
+        {/* Wrap the children with UserProvider */}
+        <Providers>
+        {children}
+        </Providers>
+          
+       
       </body>
 
     </html>
