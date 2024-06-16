@@ -7,7 +7,8 @@ import { FaChartBar, FaEnvelope, FaUsers } from "react-icons/fa";
 import Image from "next/image";
 import img from "../../Images/sell.jpg";
 import gonukkad from "../../Images/logo.webp";
-import { useUser } from '../../context/userContext';
+
+
 import { useSelector } from "react-redux";
 
 
@@ -15,13 +16,14 @@ import { useSelector } from "react-redux";
 const Header = () => {
 
   
-  const userRole = useSelector((data)=>data.users)
-  // console.log(userRole[2]);
+  const userRole = useSelector((data)=>data)
+console.log(userRole);
 
   if(userRole.length>0){
     localStorage.setItem('userRole', userRole[2])
   }
-  const Role = localStorage.getItem('userRole');
+  const Role = localStorage.getItem('Roles');
+  
 
 console.log("useRole", Role)
   const data = [

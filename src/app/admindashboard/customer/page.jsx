@@ -1,76 +1,52 @@
 "use client"
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from 'axios'
 const page = () => {
-  
-  const customers = [
-    {
-      name: "John Doe",
-      email: "john.doe@example.com",
-      phone: "+1234567890",
-      totalSpend: 1200.5,
-      lastOrderDate: "2024-05-01",
-    },
-    {
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      phone: "+1987654321",
-      totalSpend: 850.75,
-      lastOrderDate: "2024-05-10",
-    },
-    {
-      name: "Alice Johnson",
-      email: "alice.johnson@example.com",
-      phone: "+1122334455",
-      totalSpend: 640.0,
-      lastOrderDate: "2024-04-25",
-    },
-    {
-      name: "Bob Brown",
-      email: "bob.brown@example.com",
-      phone: "+2233445566",
-      totalSpend: 1500.0,
-      lastOrderDate: "2024-05-15",
-    },
-    {
-      name: "Charlie Davis",
-      email: "charlie.davis@example.com",
-      phone: "+3344556677",
-      totalSpend: 930.3,
-      lastOrderDate: "2024-05-05",
-    },
-  ];
+  const [user, setuser] = useState([])
 
-const customerData = async ()=>{
-  try {
-    const Customer = await axios.get("http://localhost:3001/allvendors")
+  const TableHead = [
+    {
+      label: "name",
+      label: "Email",
+      label: "Mobile",
+      label: "Buisness name",
+      label: "Address",
+    }
+  ]
 
-    console.log("Customer",Customer)
-  } catch (error) {
-    console.log("error while getting customer Data",error)
+  const customerData = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/allvendors")
+
+      const filteredcustomer = response.data.vendors.filter(
+        (vendor) => vendor.status === "true" && vendor.role === "user"
+      );
+      setuser(filteredcustomer)
+      console.log("filtercustomer", filteredcustomer)
+    } catch (error) {
+      console.log("error while getting customer Data", error)
+    }
   }
-}
-useEffect(()=>{
-  customerData()
-},[])
-
+  useEffect(() => {
+    customerData()
+  }, [])
+  console.log("user from customer", user)
   return (
     <>
-      <div className="p-4 w-full">
+      <div className=" w-full ">
         <div className="flex w-full justify-between items-center p-4">
           <div className="text-3xl">Vendor Dashboard</div>
         </div>
 
-        <div className="bg-[#f5f9fc] py-10 px-5 flex flex-col">
+        <div className="  py-10 flex flex-col">
           <h2 className="text-2xl mb-4">Customer Details</h2>
-          <table className="min-w-full bg-white border">
+          {/* <table className="min-w-full bg-white border">
             <thead>
               <tr>
-                <th className="py-2 px-4 border">Name</th>
-                <th className="py-2 px-4 border">Email</th>
-                <th className="py-2 px-4 border">Phone</th>
-                <th className="py-2 px-4 border">Total Spend</th>
-                <th className="py-2 px-4 border">Last Order Date</th>
+                {
+                 
+                }
+                
               </tr>
             </thead>
             <tbody>
@@ -84,7 +60,85 @@ useEffect(()=>{
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table> */}
+          <div>
+            <table className="w-full table-auto">
+              <thead>
+                <tr className="bg-[#f5f9fc] text-gray-600 text-sm border *:text-start">
+                  <th className="p-4">Name</th>
+                  <th>Mobile No</th>
+                  <th>Email</th>
+                  {/* <th>Role</th> */}
+                  <th>Buisness Name</th>
+                  <th>Address</th>
+                  <th>Buisness Phone</th>
+
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody className="text-sm">
+                {/* {
+                 Object.entries(user)
+                 .filter(([key,value],index)=>key!="userInfo")
+                 .map(([key,value],index)=>(
+                  <tr key={index}>
+                      <td>
+                        {value}
+                      </td>
+                    </tr>
+                 ))
+                } */}
+
+                {/* {Object.entries(user)
+                  .map(([key, value], index) => (
+                    Object.entries(key)
+                    .filter(([secondkay,secondvalue],secondindex)=>secondkay!="userInfo")
+                    .map(([secondkay,secondvalue],secondindex)=>(
+                      <div className="relative">
+                          <label
+                            className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
+                          >
+                            {secondkay}
+                          </label>
+                        </div>
+                    ))
+                  ))} */}
+
+                {
+                  user.map((ele, index) => (
+                    <tr className="bg-gray-100 hover:bg-red-100 border *:p-2">
+                      <td className="">
+                        {ele["username"]}
+                      </td>
+                      <td>
+                        {ele["mobile"]?ele["mobile"]:"-----"}
+                      </td>
+                      <td>
+                        {ele["email"]?ele["email"]:"-----"}
+                      </td>
+                      <td>
+                        {
+                         
+                          ele["userInfo"].Buisness_Name?ele["userInfo"].Buisness_Name:"-----"
+                        }
+                        {}
+                      </td>
+                      <td>
+                        {ele["userInfo"].address?ele["userInfo"].address:"-----"}
+                      </td>
+                      <td>
+                        {ele["userInfo"].Buisness_Phone?ele["userInfo"].Buisness_Phone:"-----"}
+                      </td>
+                    </tr>
+                  ))
+                }
+
+
+
+
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </>

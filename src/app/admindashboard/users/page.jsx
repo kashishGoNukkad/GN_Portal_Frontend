@@ -71,16 +71,7 @@ const Users = () => {
     });
   };
 
-  // const handleDelete = async () => {
-  //   console.log(newdata);
-  //   try {
-  //     const response = await axios.delete(`http://localhost:3001/deletevendor/${data1[index]._id}`, newdata);
-  //     fetchVendors();
-  //     toast.success("Vendor deleted Successfully!");
-  //     } catch (error) {
-  //     toast.error("Failed to delete vendor!");
-  //   }
-  // }
+  
   
 
   const handleAdd = async () => {

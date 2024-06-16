@@ -40,9 +40,9 @@ const Steps = [
 const totalFields = Steps.reduce((acc, step) => acc + step.fields.length, 0);
 
 const StepForm = ({ currentStep, formData, handleInputChange }) => {
-  // const { fields } = Steps[currentStep];
+
   const { fields = [] } = Steps[currentStep] || {};
-  // const[temp,]
+ 
   return (
     <div className="grid grid-cols-1 gap-8">
       {fields.map((field, index) => (
@@ -100,8 +100,7 @@ const Users = () => {
       );
       const filteredVendor = response.data.vendors;
 
-      console.log("Filtered", filteredVendors);
-      console.log("Filter", filteredVendor);
+    
       setData1(filteredVendors.reverse());
     } catch (error) {
       console.error("Failed to fetch vendors:", error);
@@ -138,7 +137,7 @@ const Users = () => {
         formData,
         { withCredentials: true }
       );
-      console.log("response form", response);
+      
       setShowForm(false);
       setFormData({});
 
