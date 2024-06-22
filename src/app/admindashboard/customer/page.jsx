@@ -30,7 +30,7 @@ const page = () => {
   useEffect(() => {
     customerData()
   }, [])
-  console.log("user from customer", user)
+  
   return (
     <>
       <div className=" w-full ">

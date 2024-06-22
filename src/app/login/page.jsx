@@ -33,15 +33,15 @@ export default function SignUp() {
           withCredentials: true,
         }
       );
-      console.log("_id", response.data._id);
-      console.log("response", response.data.Role);
+     
       setRole(response.data.Role);
       setuser_id(response.data._id);
 
       if (response.data.login) {
         toast.success("Login success");
 
-        router.push("/admindashboard");
+        // router.push("/admindashboard");
+        router.push("/home");
       } else {
         toast.error("Verify Your email first!");
       }

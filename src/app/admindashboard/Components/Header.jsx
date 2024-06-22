@@ -7,6 +7,7 @@ import { FaChartBar, FaEnvelope, FaUsers } from "react-icons/fa";
 import Image from "next/image";
 import img from "../../Images/sell.jpg";
 import gonukkad from "../../Images/logo.webp";
+import { LuLogOut } from "react-icons/lu";
 
 
 import { useSelector } from "react-redux";
@@ -25,21 +26,22 @@ console.log(userRole);
   const Role = localStorage.getItem('Roles');
   
 
-console.log("useRole", Role)
+
   const data = [
     { title: "Dashboard", icon: <CiHome />, link: "/admindashboard" },
     { title: "Vendors", icon: <FaUsers />, link: "/admindashboard/vendors" },
     { title: "Users", icon: <FaUsers />, link: "/admindashboard/users" },
-
+    { title: "Logout", icon: <LuLogOut />, link: "/login" },
   ];
   const data3 = [
     { title: "VendorDashboard", icon: <CiHome />, link: "/admindashboard" },
     { title: "Customer", icon: <CiHome />, link: "/admindashboard/customer" },
+    { title: "Logout", icon: <LuLogOut />, link: "/login" },
 
   ];
   const data4 = [
     { title: "UserDashboard", icon: <CiHome />, link: "" },
-
+    { title: "Logout", icon: <LuLogOut />, link: "/login" },
   ];
 
 
