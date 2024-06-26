@@ -5,22 +5,22 @@ import img from "../../../../public/assets/Electrician.png";
 import men from "../../../../public/assets/1.png";
 import downarrow from "../../../../public/assets/Category/down.png";
 import axios from "axios";
+import Link from "next/link";
+import { searchResult } from "../../Redux/slice"
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 const SearchComponent = () => {
-  // // State to manage dropdown visibility
-  // const [isDropdownOpen, setDropdownOpen] = useState(false);
-
-  // // Function to toggle dropdown
-  // const toggleDropdown = () => {
-  //   setDropdownOpen(!isDropdownOpen);
-  // };
+ 
 
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState({ name: "Select Category", icon: "" });
   const [query, setQuery] = useState('');
   const [location, setLocation] = useState({ lat: null, lng: null });
-  // const [results, setResults] = useState([]);
+  const [results, setResults] = useState('');
+  const dispatch = useDispatch();
 
   const dropdownRef = useRef(null); 
+  const router = useRouter();
 
   useEffect(() => {
     
@@ -45,7 +45,7 @@ const SearchComponent = () => {
 
   const getLocation = async () => {
     if (!navigator.geolocation) {
-      console.error('Geolocation Error!');
+      
       throw new Error('Geolocation not supported');
     }
 
@@ -71,23 +71,39 @@ const SearchComponent = () => {
 
   const handleSearch = async (event) => {
     event.preventDefault();
-
+  
     try {
       const currentLocation = await getLocation();
-      console.log("Kashish")
+      console.log("Kashish");
       if (currentLocation.lat && currentLocation.lng && query) {
-        console.log("Kashish2")
+        console.log("Kashish2");
+  
         const response = await axios.post('http://localhost:3001/search', {
           query,
           location: currentLocation,
         });
-      
-        console.log(response.data.services); 
+  
+        console.log(response.data.services);
+  
+        setResults(response.data.services); // Ensure to set only the services part
+        console.log(results);
+  
+        localStorage.setItem("services", JSON.stringify(response.data.services)); // Convert to string before storing
       }
     } catch (error) {
       console.error('Error searching services', error);
     }
+    router.push(`/home/${query}`);
   };
+  
+
+// const searchDispatch = ()=>{
+//   dispatch(searchResult(results))
+// }
+
+//   useEffect(()=>{
+//     searchDispatch()
+//   },[])
 
   const categories = [
     { name: "Cab Service", icon: "/style/assets/Category/cat-1.jpeg" },
@@ -117,7 +133,7 @@ const SearchComponent = () => {
         <hr className="h-[3px] w-full bg-[#ffb600]" />
         <div className="">
           <form onSubmit={handleSearch} >
-            <div className="flex  h-full flex-col md:gap-0  *:py-3  *:px-2   gap-3 md:flex-row rounded-sm md:w-[38vw] w-full p-2   bg-[#f2f5fb]">
+            <div className="flex  h-full flex-col md:gap-0  *:py-3  *:px-2   gap-3 md:flex-row rounded-sm md:w-[38vw] w-full p-1  bg-[#f2f5fb]">
               <div className="border bg-white md:w-5/12 ">
                 <input
                   type="text"
@@ -152,8 +168,8 @@ const SearchComponent = () => {
                   </div>
                 )}
               </div>
-              <div className="border !px-0 !py-0 h-full ">
-                <button type="submit" className=" px-5 py-3  w-full  bg-[#ffb600] text-white">Search</button>
+              <div className="border  !px-0 !py-0 h-full ">
+                <button type="submit"  onClick={handleSearch}  className=" px-5 py-3  w-full  bg-[#ffb600] text-white">Search</button>
               </div>
             </div>
           </form>

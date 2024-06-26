@@ -2,13 +2,47 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import logo from "../../../../public/assets/logo-dark.png";
-import { RiAdminFill } from "react-icons/ri";
+import { FaUserAlt } from "react-icons/fa";
 import axios from "axios";
-import { IoAdd } from "react-icons/io5";
-import { useRouter } from "next/navigation";
-import { FaSquarePhone } from "react-icons/fa6";
+import { RiAdminFill } from "react-icons/ri";
 import Modal from "../Components/Modal";
 import svg from "../../../../public/Login.svg";
+import { RiAdminLine } from "react-icons/ri";
+import mobileSide from "../Components/mobileSide"
+import { PiGreaterThanLight } from "react-icons/pi";
+
+const MobileSide = ({ isOpen, toggleSidebar }) => {
+  return (
+    <div
+      className={`fixed top-0 left-0 h-full w-64  bg-white text-black transform ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+      } transition-transform duration-300 ease-in-out z-50`}
+    >
+      <button
+        className="absolute top-0 right-4 text-2xl"
+        onClick={toggleSidebar}
+      >
+        &times;
+      </button>
+      <div className="py-4">
+        {/* <h2 className="text-lg font-bold">Sidebar Menu</h2> */}
+        <ul className="mt-4 space-y-2">
+          <li className="flex justify-between border p-4 items-center">
+            <a href="#" className="block ">Home</a>
+            <PiGreaterThanLight className="size-4" />
+            </li>
+          <li><a href="#" className="block">Pages</a></li>
+          <li><a href="#" className="block">Profile</a></li>
+          <li><a href="#" className="block">Job</a></li>
+          <li><a href="#" className="block">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+
+
 
 const TempHeader = () => {
   const [modal, setModal] = useState(false);
@@ -17,6 +51,16 @@ const TempHeader = () => {
   const [email, setEmail] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [phoneError, setPhoneError] = useState('');
+  const [box, setBox] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+
+
+
 
   useEffect(() => {
     const isNameValid = name.trim() !== '';
@@ -36,9 +80,9 @@ const TempHeader = () => {
       const isEmailValid = email === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
       setPhoneError(isPhoneValid ? '' : 'Please enter a valid 10-digit phone number.');
-      console.log(phoneError) ``
+      console.log(phoneError)
       setIsButtonDisabled(!(isNameValid && isPhoneValid && isEmailValid));
-    
+
       if (!isNameValid || !isPhoneValid || !isEmailValid) {
         // If the form is invalid, do not proceed
         return;
@@ -54,7 +98,10 @@ const TempHeader = () => {
       console.log(error);
     }
   };
-
+  const handlebox = () => {
+    setBox(!box)
+  }
+  
   return (
     <>
       <header className="relative">
@@ -104,19 +151,47 @@ const TempHeader = () => {
             </div>
           </div>
           <div className="flex justify-center items-center gap-8">
-            <button
-              onClick={() => setModal(true)}
-              className="bg-yellow-400 rounded-lg flex justify-center items-center px-6 py-2 gap-2 text-center"
-            >
-              <RiAdminFill />
-              <span>login</span>
-            </button>
+            {
+              1 ? (<button
+                onClick={() => setModal(true)}
+                className="bg-yellow-400 rounded-lg flex justify-center items-center px-6 py-2 gap-2 text-center"
+              >
+                <RiAdminFill />
+                <span>login</span>
+              </button>) : (
+                <>
+                  <div onClick={handlebox} className="relative  size-30 cursor-pointer rounded-full px-4 py-4 bg-gray-300">
+                    <FaUserAlt className="text-gray-400" />
+                  </div>
+                </>
+              )
+            }
+
           </div>
-          <button className="md:hidden flex flex-col gap-1">
+          <button className="md:hidden flex flex-col gap-1" onClick={toggleSidebar}>
             <div className="bg-black w-6 h-1"></div>
             <div className="bg-black w-6 h-1"></div>
             <div className="bg-black w-6 h-1"></div>
           </button>
+
+{/* mobile sidebar menu */}
+
+{/* mobile sidebar menu */}
+
+
+
+
+
+          {/* logout box */}
+          <div className={`absolute w-36 ${box?"block":"hidden"} top-20  px-4 py-2 right-16 border rounded-md border-gray-100 shadow-xl`}>
+
+            <ul className="text-sm flex flex-col gap-4">
+
+              <li className="cursor-pointer"><a href=""></a>Orders</li>
+              <li className="cursor-pointer"><a href=""></a>logout</li>
+            </ul>
+
+          </div>
         </div>
         <Modal
           Isvisible={modal}
@@ -184,7 +259,9 @@ const TempHeader = () => {
             </button>
           </form>
         </Modal>
+        <mobileSide />
       </header>
+      <MobileSide isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
     </>
   );
 };

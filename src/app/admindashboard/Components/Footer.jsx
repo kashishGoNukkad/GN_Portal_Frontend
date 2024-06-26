@@ -23,7 +23,7 @@ const Footer = () => {
       </div>
       <div class="flex-col flex md:flex-row md:justify-between justify-center md:items-start items-baseline md:gap-0 gap-6 ">
 
-        <div class="space-y-4  md:text-center">
+        <div class="space-y-4 ">
           <span class="text-[#022279] text-lg font-bold">Site Links</span>
           <ul class="space-y-1">
             <li><a href="">Blog</a></li>
@@ -32,7 +32,7 @@ const Footer = () => {
             <li><a href="">Categories</a></li>
           </ul>
         </div>
-        <div class="space-y-4 md:text-center">
+        <div class="space-y-4 ">
           <span class="text-[#022279] text-lg font-bold">Popular Cities</span>
           <ul class="space-y-1">
             <li><a href="">Cambridge</a></li>
@@ -41,7 +41,7 @@ const Footer = () => {
             <li><a href="">Brooklyn</a></li>
           </ul>
         </div>
-        <div class="space-y-4 md:text-center">
+        <div class="space-y-4 ">
           <span class="text-[#022279] text-lg font-bold">Categories</span>
           <ul class="space-y-1">
             <li><a href="">Yoga Classes</a></li>
@@ -50,7 +50,7 @@ const Footer = () => {
             <li><a href="">Car Service</a></li>
           </ul>
         </div>
-        <div class="space-y-4 md:text-center">
+        <div class="space-y-4 ">
           <span class="text-[#022279] text-lg font-bold">Contact Info</span>
           <ul class="space-y-1">
             <li><a href="">India</a></li>

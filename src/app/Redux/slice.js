@@ -4,7 +4,8 @@ const { createSlice, nanoid } = require('@reduxjs/toolkit');
 
 const initialState = {
   users: "",
-  userId:"" // Initialize as an empty string
+  userId:"", // Initialize as an empty string
+  searchResult:""
 };
 
 const slice = createSlice({
@@ -32,10 +33,18 @@ const slice = createSlice({
 
     //   Store updated state in localStorage
       localStorage.setItem("id", state.userId);
+    },
+    searchResult:(state,action)=>{
+      console.log("search Result",action);
+      const search = action.payload;
+      state.searchResult = state.searchResult ? `${state.searchResult}` : search;
+      localStorage.setItem("Services", state.searchResult);
     }
+
+
   }
 });
 
-export const { AddRole, userId} = slice.actions;
+export const { AddRole, userId , searchResult} = slice.actions;
 export default slice.reducer;
 

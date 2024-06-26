@@ -16,7 +16,7 @@ const Modal = ({ Isvisible, onclose,children }) => {
       id="wrapper"
       onClick={handleClose}
     >
-      <div className="w-[500px] flex flex-col  gap-3">
+      <div className="w-[500px]  flex flex-col  gap-3">
         <div className="place-self-end cursor-pointer bg-white p-2 rounded-full "><RxCross1 onClick={onclose}  /></div>
        
         <div className="p-6  bg-white rounded-lg space-y-4">
