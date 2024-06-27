@@ -15,7 +15,7 @@ const SearchComponent = () => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState({ name: "Select Category", icon: "" });
   const [query, setQuery] = useState('');
-  const [location, setLocation] = useState({ lat: null, lng: null });
+  const [location, setLocation] = useState({ lat: 19.7554798, lng: 75.7108884 });
   const [results, setResults] = useState('');
   const dispatch = useDispatch();
 
@@ -43,44 +43,46 @@ const SearchComponent = () => {
     };
   }, [isDropdownVisible]);
 
-  const getLocation = async () => {
-    if (!navigator.geolocation) {
+  // const getLocation = async () => {
+  //   if (!navigator.geolocation) {
       
-      throw new Error('Geolocation not supported');
-    }
+  //     throw new Error('Geolocation not supported');
+  //   }
 
-    try {
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
+  //   try {
+  //     const position = await new Promise((resolve, reject) => {
+  //       navigator.geolocation.getCurrentPosition(resolve, reject);
+  //     });
 
-      const coords = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      };
+  //     const coords = {
+  //       lat: position.coords.latitude,
+  //       lng: position.coords.longitude,
+  //     };
 
-      setLocation(coords);
-      console.log(coords);
+  //     setLocation(coords);
+  //     console.log(coords);
 
-      return coords;
-    } catch (error) {
-      console.error('Error in getting location', error);
-      throw error;
-    }
-  };
+  //     return coords;
+  //   } catch (error) {
+  //     console.error('Error in getting location', error);
+  //     throw error;
+  //   }
+  // };
 
   const handleSearch = async (event) => {
     event.preventDefault();
   
     try {
-      const currentLocation = await getLocation();
+      // const currentLocation = await getLocation();
+      const currentLocation = location;
       console.log("Kashish");
-      if (currentLocation.lat && currentLocation.lng && query) {
-        console.log("Kashish2");
+      // if (currentLocation.lat && currentLocation.lng && query) {
+      //   console.log("Kashish2");
   
         const response = await axios.post('http://localhost:3001/search', {
           query,
           location: currentLocation,
+          // location: lo
         });
   
         console.log(response.data.services);
@@ -89,7 +91,7 @@ const SearchComponent = () => {
         console.log(results);
   
         localStorage.setItem("services", JSON.stringify(response.data.services)); // Convert to string before storing
-      }
+      // }
     } catch (error) {
       console.error('Error searching services', error);
     }
