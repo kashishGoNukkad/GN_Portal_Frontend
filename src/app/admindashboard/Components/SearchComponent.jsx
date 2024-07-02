@@ -15,7 +15,7 @@ const SearchComponent = () => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState({ name: "Select Category", icon: "" });
   const [query, setQuery] = useState('');
-  const [location, setLocation] = useState({ lat: 19.7554798, lng: 75.7108884 });
+  const [location, setLocation] = useState({ lat: null, lng: null });
   const [results, setResults] = useState('');
   const dispatch = useDispatch();
 

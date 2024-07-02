@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 
 export default function SignUp() {
   const router = useRouter();
-  // const { setUser } = useUser();
+ 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

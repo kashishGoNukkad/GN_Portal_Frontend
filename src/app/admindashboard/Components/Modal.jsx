@@ -2,7 +2,7 @@ import React from 'react';
 import { RxCross1 } from 'react-icons/rx';
 import svg from '../../../../public/Login.svg'
 import Image from 'next/image';
-Image
+
 const Modal = ({ Isvisible, onclose,children }) => {
   if (!Isvisible) return null;
 

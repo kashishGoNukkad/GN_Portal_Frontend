@@ -7,7 +7,7 @@ import axios from 'axios';
 const Page = () => {
   const [services, setServices] = useState([]);
   const [query, setQuery] = useState('');
-  const [location, setLocation] = useState({ lat: 19.7554798, lng: 75.7108884 });
+  const [location, setLocation] = useState({ lat: '', lng: '' });
   const [filteredServices, setFilteredServices] = useState([]);
   const [categories, setCategories] = useState([]);
   const [prices, setPrices] = useState([]);
