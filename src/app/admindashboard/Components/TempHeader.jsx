@@ -129,9 +129,9 @@ const TempHeader = () => {
         mobile,
         email,
       });
+      setIsOtpGenerated(true);
       if (response.status === 200) {
         setEmail2(email);
-        setIsOtpGenerated(true);
       }
       console.log("response", response);
       // setOtp()
