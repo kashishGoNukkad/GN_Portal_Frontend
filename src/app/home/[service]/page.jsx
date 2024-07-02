@@ -3,6 +3,9 @@ import React, { useEffect, useState } from 'react';
 import TempHeader from '@/app/admindashboard/Components/TempHeader';
 import { CiSearch } from "react-icons/ci";
 import axios from 'axios';
+import ReactSlider from 'react-slider';
+import './custom.css'
+
 
 const Page = () => {
   const [services, setServices] = useState([]);
@@ -12,44 +15,48 @@ const Page = () => {
   const [categories, setCategories] = useState([]);
   const [prices, setPrices] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedFilters, setSelectedFilters] = useState({
+    Category: [],
+    price: [0, 1000],
+  });
 
 
-    const getLocation = async () => {
-    if (!navigator.geolocation) {
+    // const getLocation = async () => {
+  //   if (!navigator.geolocation) {
       
-      throw new Error('Geolocation not supported');
-    }
+  //     throw new Error('Geolocation not supported');
+  //   }
 
-    try {
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
+  //   try {
+  //     const position = await new Promise((resolve, reject) => {
+  //       navigator.geolocation.getCurrentPosition(resolve, reject);
+  //     });
 
-      const coords = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      };
+  //     const coords = {
+  //       lat: position.coords.latitude,
+  //       lng: position.coords.longitude,
+  //     };
 
-      setLocation(coords);
-      console.log(coords);
+  //     setLocation(coords);
+  //     console.log(coords);
 
-      return coords;
-    } catch (error) {
-      console.error('Error in getting location', error);
-      throw error;
-    }
-  };
+  //     return coords;
+  //   } catch (error) {
+  //     console.error('Error in getting location', error);
+  //     throw error;
+  //   }
+  // };
 
 
   const handleSearch = async (event) => {
     event.preventDefault();
   
     try {
-      const currentLocation = await getLocation();
-      // const currentLocation = location;
+      // const currentLocation = await getLocation();
+      const currentLocation = location;
       console.log("Kashish");
-      if (currentLocation.lat && currentLocation.lng && query) {
-        console.log("Kashish2");
+      // if (currentLocation.lat && currentLocation.lng && query) {
+      //   console.log("Kashish2");
   
         const response = await axios.post('http://localhost:3001/search', {
           query,
@@ -65,9 +72,10 @@ const Page = () => {
 
         const uniqueCategories = [...new Set(response.data.services.map(service => service.category))];
         setCategories(uniqueCategories);
+
+
         const uniquePrices = [...new Set(response.data.services.map(service => service.price))];
         setPrices(uniquePrices);
-      }
     } catch (error) {
       console.error('Error searching services', error);
     }
@@ -87,31 +95,28 @@ const Page = () => {
         setPrices(uniquePrices);
     }
   }, []);
-  
-  // FilterComponent to handle filters
-  const FilterComponent = ({ categories = [] }) => {
-    const [selectedFilters, setSelectedFilters] = useState({
-      Category: [],
-      PriceRange: [],
-      filter3: [],
-      filter4: []
-    });
 
+
+  useEffect(() => {
+    const filtered = services.filter(service => {
+      return (
+        (selectedFilters.Category.length === 0 || selectedFilters.Category.includes(service.category)) &&
+        (service.price >= selectedFilters.price[0] && service.price <= selectedFilters.price[1])
+      );
+    });
+    setFilteredServices(filtered);
+  }, [services, selectedFilters]);
+
+  const FilterComponent = ({ categories = [] }) => {
     const [showMore, setShowMore] = useState({
       category: false,
-      filter2: false,
-      filter3: false,
-      filter4: false
     });
 
     const filters = {
       Category: categories,
-      PriceRange: prices,
-      filter3: ['Option 3-1', 'Option 3-2', 'Option 3-3', 'Option 3-4', 'Option 3-5', 'Option 3-6', 'Option 3-7', 'Option 3-8', 'Option 3-9', 'Option 3-10'],
-      filter4: ['Option 4-1', 'Option 4-2', 'Option 4-3', 'Option 4-4', 'Option 4-5', 'Option 4-6', 'Option 4-7', 'Option 4-8', 'Option 4-9', 'Option 4-10']
+      price: selectedFilters.price,
     };
 
-    // Handle filter changes
     const handleFilterChange = (filterName, option) => {
       setSelectedFilters(prevSelectedFilters => {
         const filterArray = prevSelectedFilters[filterName];
@@ -127,12 +132,10 @@ const Page = () => {
             [filterName]: [...filterArray, option]
           };
         }
-        console.log('Selected Filters:', newSelectedFilters);
         return newSelectedFilters;
       });
     };
 
-    // Handle showing more/less options
     const handleShowMore = (filterName) => {
       setShowMore(prevShowMore => ({
         ...prevShowMore,
@@ -140,10 +143,42 @@ const Page = () => {
       }));
     };
 
-    // Render filter section
+    const handlePriceChange = (priceRange) => {
+      setSelectedFilters(prevSelectedFilters => ({
+        ...prevSelectedFilters,
+        price: priceRange
+      }));
+    };
+  
     const renderFilterSection = (filterName, filterOptions) => {
       const isExpanded = showMore[filterName];
       const optionsToShow = isExpanded ? filterOptions : filterOptions.slice(0, 5);
+
+      if (filterName === 'price') {
+        return (
+          <div className="mb-4" key={filterName}>
+            <label className="block mb-2">Price Range</label>
+            <ReactSlider
+              className="horizontal-slider"
+              thumbClassName="thumb"
+              trackClassName="track"
+              defaultValue={selectedFilters.price}
+              ariaLabel={['Lower thumb', 'Upper thumb']}
+              ariaValuetext={state => `Thumb value ${state.valueNow}`}
+              pearling
+              minDistance={10}
+              min={0}
+              max={1000}
+              value={selectedFilters.price}
+              onChange={handlePriceChange}
+            />
+            <div className="flex justify-between mt-2">
+              <span>{selectedFilters.price[0]}</span>
+              <span>{selectedFilters.price[1]}</span>
+            </div>
+          </div>
+        );
+      }
 
       return (
         <div className="mb-4" key={filterName}>
@@ -192,7 +227,6 @@ const Page = () => {
     <>
       <TempHeader />
       <div className='flex flex-row'>
-        {/* Pass the categories prop to FilterComponent */}
         <FilterComponent categories={categories} />
         <div className='h-screen w-[75vw] bg-red-100'>
           <div className="flex justify-center flex-col gap-20 bg-gray-100">
@@ -212,8 +246,8 @@ const Page = () => {
             </div>
           </div>
           <div className='bg-green-100 h-screen overflow-auto overflow-y-scroll'>
-            {services.length > 0 ? (
-              services.map((service, index) => (
+            {filteredServices.length > 0 ? (
+              filteredServices.map((service, index) => (
                 <div key={index} className="p-4 m-2 bg-white shadow-md rounded-lg">
                   <h2 className="text-xl font-bold"><strong>{service.name}</strong></h2>
                   <p><strong>Category:</strong> {service.category}</p>
