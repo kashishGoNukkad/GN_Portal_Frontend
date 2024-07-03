@@ -5,23 +5,26 @@ import { CiSearch } from "react-icons/ci";
 import axios from 'axios';
 import ReactSlider from 'react-slider';
 import './custom.css'
-
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from 'next/link';
 
 const Page = () => {
   const [services, setServices] = useState([]);
   const [query, setQuery] = useState('');
-  const [location, setLocation] = useState({ lat: '', lng: '' });
+  const [location, setLocation] = useState({ lat: 19.7504798, lng: 75.7158884 });
   const [filteredServices, setFilteredServices] = useState([]);
   const [categories, setCategories] = useState([]);
   const [prices, setPrices] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedFilters, setSelectedFilters] = useState({
     Category: [],
     price: [0, 1000],
   });
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-    // const getLocation = async () => {
+
+  //   const getLocation = async () => {
   //   if (!navigator.geolocation) {
       
   //     throw new Error('Geolocation not supported');
@@ -47,55 +50,81 @@ const Page = () => {
   //   }
   // };
 
-
-  const handleSearch = async (event) => {
-    event.preventDefault();
-  
-    try {
-      // const currentLocation = await getLocation();
-      const currentLocation = location;
-      console.log("Kashish");
-      // if (currentLocation.lat && currentLocation.lng && query) {
-      //   console.log("Kashish2");
-  
-        const response = await axios.post('http://localhost:3001/search', {
-          query,
-          location: currentLocation,
-        });
-  
-        console.log(response.data.services);
-  
-        setServices(response.data.services); 
-       
-  
-        localStorage.setItem("services", JSON.stringify(response.data.services)); 
-
-        const uniqueCategories = [...new Set(response.data.services.map(service => service.category))];
-        setCategories(uniqueCategories);
-
-
-        const uniquePrices = [...new Set(response.data.services.map(service => service.price))];
-        setPrices(uniquePrices);
-    } catch (error) {
-      console.error('Error searching services', error);
-    }
-    
-  };
-
   // Load services from local storage on component mount
   useEffect(() => {
     const storedServices = JSON.parse(localStorage.getItem("services"));
     if (storedServices) {
       setServices(storedServices);
 
-      // Extract unique categories
       const uniqueCategories = [...new Set(storedServices.map(service => service.category))];
       setCategories(uniqueCategories);
+
       const uniquePrices = [...new Set(storedServices.map(service => service.price))];
-        setPrices(uniquePrices);
+      setPrices(uniquePrices);
+    }
+
+    const urlQuery = searchParams.get('query');
+    if (urlQuery) {
+      setQuery(urlQuery);
     }
   }, []);
 
+  const handleSearch = async (event) => {
+    event.preventDefault();
+
+    try {
+      // const currentLocation = await getLocation();
+      const currentLocation = location;
+        // if (currentLocation.lat && currentLocation.lng && query) {
+        // console.log("Kashish2");
+      setSelectedFilters({
+        Category: [],
+        price: [0, 1000],
+      });
+
+      const response = await axios.post('http://localhost:3001/search', {
+        query,
+        location: currentLocation,
+      });
+
+      setServices(response.data.services);
+      localStorage.setItem("services", JSON.stringify(response.data.services));
+
+      const uniqueCategories = [...new Set(response.data.services.map(service => service.category))];
+      setCategories(uniqueCategories);
+
+      const uniquePrices = [...new Set(response.data.services.map(service => service.price))];
+      setPrices(uniquePrices);
+
+      router.push(`/home/${encodeURIComponent(query)}?query=${encodeURIComponent(query)}`, undefined, { shallow: true });
+    // }
+    } catch (error) {
+      console.error('Error searching services', error);
+    }
+  };
+
+  const deSelectFilters = () => {
+    setSelectedFilters({
+      Category: [],
+      price: [0, 1000],
+    });
+  };
+
+  useEffect(() => {
+    if (query.length === 0) {
+      setFilteredServices([]);
+      
+    }
+  }, [query]);
+
+  // useEffect(()=>{
+  //   if(filteredServices.length===0){
+  //     setSelectedFilters({
+  //       Category: [],
+  //       price: [0, 1000],
+  //     });
+  //   }
+  // },[query])
 
   useEffect(() => {
     const filtered = services.filter(service => {
@@ -134,6 +163,7 @@ const Page = () => {
         }
         return newSelectedFilters;
       });
+      setShowMore(true);
     };
 
     const handleShowMore = (filterName) => {
@@ -149,7 +179,7 @@ const Page = () => {
         price: priceRange
       }));
     };
-  
+
     const renderFilterSection = (filterName, filterOptions) => {
       const isExpanded = showMore[filterName];
       const optionsToShow = isExpanded ? filterOptions : filterOptions.slice(0, 5);
@@ -211,14 +241,11 @@ const Page = () => {
 
     return (
       <div className="h-screen w-[25vw] bg-gray-200 p-4 overflow-y-scroll">
-        <h2 className="text-xl font-bold mb-4">Filters</h2>
+        <div className='flex justify-between'>
+          <h2 className="text-xl font-bold mb-4">Filters</h2>
+          <h2 className="text-xl font-bold mb-4 cursor-pointer" onClick={deSelectFilters}>Clear Filters</h2>
+        </div>
         {Object.keys(filters).map(filterName => renderFilterSection(filterName, filters[filterName]))}
-        <button
-          type="button"
-          className="mt-4 bg-blue-500 text-white p-2 rounded"
-        >
-          Submit
-        </button>
       </div>
     );
   };
@@ -248,13 +275,15 @@ const Page = () => {
           <div className='bg-green-100 h-screen overflow-auto overflow-y-scroll'>
             {filteredServices.length > 0 ? (
               filteredServices.map((service, index) => (
-                <div key={index} className="p-4 m-2 bg-white shadow-md rounded-lg">
-                  <h2 className="text-xl font-bold"><strong>{service.name}</strong></h2>
-                  <p><strong>Category:</strong> {service.category}</p>
-                  <p><strong>Price:</strong> {service.price}</p>
-                  <p><strong>Address:</strong>{service.address}</p>
-                  <p><strong>Location:</strong> {service.location.lat}, {service.location.lng}</p>
-                </div>
+                <Link key={index} href={`/home/services/${encodeURIComponent(service.name)}?servicename=${encodeURIComponent(service.name)}`}>
+                  <div className="p-4 m-2 bg-white shadow-md rounded-lg cursor-pointer">
+                    <h2 className="text-xl font-bold"><strong>{service.name}</strong></h2>
+                    <p><strong>Category:</strong> {service.category}</p>
+                    <p><strong>Price:</strong> {service.price}</p>
+                    <p><strong>Address:</strong>{service.address}</p>
+                    <p><strong>Location:</strong> {service.location.lat}, {service.location.lng}</p>
+                  </div>
+                </Link>
               ))
             ) : (
               <p className="p-4">No services available</p>

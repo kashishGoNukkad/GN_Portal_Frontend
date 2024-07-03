@@ -1,15 +1,16 @@
 .horizontal-slider {
     width: 100%;
-    height: 2px;
+    height: 10px;
     margin: 10px 0;
   }
   
   .thumb {
-    height: 6px;
-    width: 6px;
-    background-color: #4CAF50;
+    height: 12px;
+    width: 12px;
+    background-color: #45a049;
     border-radius: 50%;
     cursor: grab;
+    border: 2px solid white;
   }
   
   .thumb:hover {
@@ -24,10 +25,13 @@
   }
   
   .track-0 {
-    background: #4CAF50;
+    background: #ddd;
   }
   
   .track-1 {
-    background: #ddd;
+    background:  #4CAF50;
+  }
+  .track-2 {
+    background:  #ddd;
   }
   
