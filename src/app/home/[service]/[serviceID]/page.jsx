@@ -4,8 +4,8 @@ import { useSearchParams } from 'next/navigation';
 import TempHeader from '@/app/admindashboard/Components/TempHeader';
 import { useRouter } from 'next/navigation';
 import Modal from "../../../admindashboard/Components/Modal";
-import Footer from '@/app/admindashboard/Components/Footer';
 import axios from 'axios';
+import Footer from '@/app/admindashboard/Components/Footer';
 
 const ServiceDetails = () => {
   const router = useRouter();
@@ -25,6 +25,12 @@ const ServiceDetails = () => {
   const [phoneError, setPhoneError] = useState("");
   const [box, setBox] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [useLastAddress, setUseLastAddress] = useState(false);
+  const [lastAddress, setLastAddress] = useState({
+    city: '',
+    state: '',
+    pincode: ''
+  });
 
   const formRef = useRef(null);
 
@@ -161,8 +167,24 @@ const ServiceDetails = () => {
       }
     }
   };
-
-  
+  const handleUseLastAddressChange = () => {
+    setUseLastAddress(!useLastAddress);
+    if (!useLastAddress) {
+      // Fetch last address from your API or local storage if needed
+      // Example of setting last address from localStorage:
+      const storedAddress = JSON.parse(localStorage.getItem('lastAddress'));
+      if (storedAddress) {
+        setLastAddress(storedAddress);
+      }
+    } else {
+      // Clear last address fields
+      setLastAddress({
+        city: '',
+        state: '',
+        pincode: ''
+      });
+    }
+  };
 
   return (
     <>
@@ -203,7 +225,7 @@ const ServiceDetails = () => {
       </div>
 
       {isStatus200 && (
-        <div ref={formRef} className="bg-white rounded-lg shadow-lg p-8  w-full mt-8 mb-8 mx-auto">
+        <div ref={formRef} className="bg-white rounded-lg shadow-lg p-8 max-w-3xl w-full mt-8 mx-auto">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">Fill Your Details</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -258,6 +280,79 @@ const ServiceDetails = () => {
                 </label>
               </div>
             </div>
+            {/* Checkbox for "Use last address" */}
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="useLastAddress"
+                checked={useLastAddress}
+                onChange={handleUseLastAddressChange}
+                className="mr-2"
+              />
+              <label htmlFor="useLastAddress" className="text-sm text-gray-700">
+                Use last address
+              </label>
+            </div>
+
+            {/* Conditional rendering of address fields */}
+            {!useLastAddress && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+                <div className="relative border rounded-md">
+                  <input
+                    type="text"
+                    id="city"
+                    className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    value={lastAddress.city}
+                    onChange={(e) =>
+                      setLastAddress({ ...lastAddress, city: e.target.value })
+                    }
+                  />
+                  <label
+                    htmlFor="city"
+                    className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                  >
+                    City
+                  </label>
+                </div>
+                <div className="relative border rounded-md">
+                  <input
+                    type="text"
+                    id="state"
+                    className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    value={lastAddress.state}
+                    onChange={(e) =>
+                      setLastAddress({ ...lastAddress, state: e.target.value })
+                    }
+                  />
+                  <label
+                    htmlFor="state"
+                    className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                  >
+                    State
+                  </label>
+                </div>
+                <div className="relative border rounded-md">
+                  <input
+                    type="text"
+                    id="pincode"
+                    className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    value={lastAddress.pincode}
+                    onChange={(e) =>
+                      setLastAddress({ ...lastAddress, pincode: e.target.value })
+                    }
+                  />
+                  <label
+                    htmlFor="pincode"
+                    className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                  >
+                    Pincode
+                  </label>
+                </div>
+              </div>
+            )}
             <button
               type="submit"
               className="p-3 w-full bg-blue-500 rounded-md text-white"
