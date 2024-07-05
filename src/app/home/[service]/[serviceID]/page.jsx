@@ -1,9 +1,10 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import TempHeader from '@/app/admindashboard/Components/TempHeader';
 import { useRouter } from 'next/navigation';
 import Modal from "../../../admindashboard/Components/Modal";
+import Footer from '@/app/admindashboard/Components/Footer';
 import axios from 'axios';
 
 const ServiceDetails = () => {
@@ -12,10 +13,9 @@ const ServiceDetails = () => {
   const servicename = searchParams.get('servicename');
   const [service, setService] = useState(null);
   const [isStatus200, setIsStatus200] = useState(null);
-
- const [modal, setModal] = useState(true);
+  const [modal, setModal] = useState(true);
   const [name, setName] = useState("");
-  const [mobile, setmobile] = useState("");
+  const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
   const [email2, setEmail2] = useState("");
   const [isOtpGenerated, setIsOtpGenerated] = useState(false);
@@ -25,6 +25,8 @@ const ServiceDetails = () => {
   const [phoneError, setPhoneError] = useState("");
   const [box, setBox] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  const formRef = useRef(null);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -48,13 +50,13 @@ const ServiceDetails = () => {
       // Handle form submission logic here
       console.log({ name, mobile, email });
       setName("");
-      setmobile("");
+      setMobile("");
       setEmail("");
-      // setEmail2('')
     } catch (error) {
       console.log(error);
     }
   };
+
   const OtpGenerate = async () => {
     try {
       const response = await axios.post("http://localhost:3001/request-otp", {
@@ -67,11 +69,11 @@ const ServiceDetails = () => {
         setEmail2(email);
       }
       console.log("response", response);
-      // setOtp()
     } catch (error) {
       console.log(error);
     }
   };
+
   const OtpVerify = async (event) => {
     event.preventDefault();
     try {
@@ -98,25 +100,26 @@ const ServiceDetails = () => {
       if (error.response && error.response.status === 400) {
         setIsLoggedIn(false);
         setErrorMessage("Invalid or expired OTP");
-       
       } else {
         console.log("error", error);
       }
     }
   };
-  const HandleOtpChange = (e)=>{
+
+  const HandleOtpChange = (e) => {
     setOtp(e.target.value);
-    if(e.target.value.length < 4){
-      setErrorMessage('')
+    if (e.target.value.length < 4) {
+      setErrorMessage('');
     }
-  }
+  };
+
   const handleLogin = () => {
     setIsLoggedIn(true);
   };
-  const handlebox = () => {
+
+  const handleBox = () => {
     setBox(!box);
   };
-
 
   useEffect(() => {
     if (servicename) {
@@ -125,6 +128,12 @@ const ServiceDetails = () => {
       setService(service);
     }
   }, [servicename]);
+
+  useEffect(() => {
+    if (isStatus200 && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [isStatus200]);
 
   if (!service) {
     return <p>Loading...</p>;
@@ -139,13 +148,13 @@ const ServiceDetails = () => {
       } else {
         console.log("Error retrieving service:", response.status);
         setIsStatus200(false);
-        setModal(true)
+        setModal(true);
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
         console.error('Unauthorized access:', error.response.data);
         setIsStatus200(false);
-        setModal(true)
+        setModal(true);
       } else {
         console.error('Error retrieving service:', error);
         setIsStatus200(false);
@@ -153,40 +162,119 @@ const ServiceDetails = () => {
     }
   };
 
+  
+
   return (
     <>
       <TempHeader />
-      <div className="p-4">
-        <h1 className="text-2xl font-bold">{service.name}</h1>
-        <p><strong>Category:</strong> {service.category}</p>
-        <p><strong>Price:</strong> {service.price}</p>
-        <p><strong>Address:</strong> {service.address}</p>
-        <p><strong>Location:</strong> {service.location.lat}, {service.location.lng}</p>
-        {/* Add other service details as needed */}
-        <div className='flex gap-8'>
-          <button onClick={() => router.back()} className="mt-4 bg-blue-500 text-white p-2 rounded">
-            Go Back
-          </button>
-          <button onClick={GetService} className="mt-4 bg-blue-500 text-white p-2 rounded">
-            Get Service
-          </button>
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-3xl w-full">
+          <div className="flex flex-col md:flex-row">
+            <img
+              src={service.image}
+              alt={service.name}
+              className="w-full md:w-1/2 rounded-lg mb-4 md:mb-0 md:mr-8"
+            />
+            <div className="flex flex-col justify-between">
+              <div>
+                <h1 className="text-4xl font-bold text-gray-800 mb-4">{service.name}</h1>
+                <p className="text-lg mb-2"><strong>Category:</strong> {service.category}</p>
+                <p className="text-lg mb-2"><strong>Price:</strong> {service.price}</p>
+                <p className="text-lg mb-2"><strong>Address:</strong> {service.address}</p>
+                <p className="text-lg mb-4"><strong>Location:</strong> {service.location.lat}, {service.location.lng}</p>
+              </div>
+              <div className="flex gap-8">
+                <button
+                  onClick={() => router.back()}
+                  className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-300"
+                >
+                  Go Back
+                </button>
+                <button
+                  onClick={GetService}
+                  className="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-300"
+                >
+                  Get Service
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      {isStatus200 === true && (
-        <button className="mt-4 bg-blue-500 text-white p-2 rounded">
-          Done
-        </button>
+
+      {isStatus200 && (
+        <div ref={formRef} className="bg-white rounded-lg shadow-lg p-8  w-full mt-8 mb-8 mx-auto">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">Fill Your Details</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="relative border rounded-md">
+                <input
+                  type="text"
+                  id="name"
+                  className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <label
+                  htmlFor="name"
+                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                >
+                  Name*
+                </label>
+              </div>
+              <div className="relative border rounded-md">
+                <input
+                  type="text"
+                  id="mobile"
+                  className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                  value={mobile}
+                  onChange={(e) => setMobile(e.target.value)}
+                />
+                <label
+                  htmlFor="mobile"
+                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                >
+                  Mobile*
+                </label>
+              </div>
+              <div className="relative border rounded-md">
+                <input
+                  type="text"
+                  id="email"
+                  className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=""
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <label
+                  htmlFor="email"
+                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                >
+                  Email
+                </label>
+              </div>
+            </div>
+            <button
+              type="submit"
+              className="p-3 w-full bg-blue-500 rounded-md text-white"
+            >
+              Submit
+            </button>
+          </form>
+        </div>
       )}
+
       {isStatus200 === false && (
         <Modal Isvisible={modal} onclose={() => setModal(false)}>
-          
-             
           {isOtpGenerated ? (
             <form onSubmit={OtpVerify} className="space-y-4">
               <div className="flex flex-col gap-4">
                 <span className="text-2xl">Verification code</span>
                 <span>We have sent you a 4 digit code on your Email</span>
-
                 <div className="relative border rounded-md">
                   <input
                     type="text"
@@ -196,13 +284,11 @@ const ServiceDetails = () => {
                     required
                     value={otp}
                     onChange={HandleOtpChange}
-                    // onChange={(e) => setOtp(e.target.value)}
                   />
                 </div>
                 {errorMessage && <div className="text-sm text-red-500">{errorMessage}</div>}
               </div>
               <button
-                //  disabled={isButtonDisabled}
                 onClick={handleLogin}
                 className="p-3 w-full bg-blue-500 rounded-md text-white"
               >
@@ -211,7 +297,6 @@ const ServiceDetails = () => {
             </form>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* {phoneError && <p className="text-red-500 text-xs mt-1">{phoneError}</p>} */}
               <div className="flex flex-col gap-4">
                 <div className="relative border rounded-md">
                   <input
@@ -227,7 +312,7 @@ const ServiceDetails = () => {
                     htmlFor="name"
                     className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
                   >
-                    name*
+                    Name*
                   </label>
                 </div>
                 <div className="relative border rounded-md">
@@ -238,7 +323,7 @@ const ServiceDetails = () => {
                     placeholder=" "
                     required
                     value={mobile}
-                    onChange={(e) => setmobile(e.target.value)}
+                    onChange={(e) => setMobile(e.target.value)}
                   />
                   <label
                     htmlFor="mobile"
@@ -250,17 +335,17 @@ const ServiceDetails = () => {
                 <div className="relative border rounded-md">
                   <input
                     type="text"
-                    id="Email"
+                    id="email"
                     className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder=""
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   <label
-                    htmlFor="Email"
+                    htmlFor="email"
                     className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
                   >
-                    email
+                    Email
                   </label>
                 </div>
               </div>
@@ -272,13 +357,11 @@ const ServiceDetails = () => {
               </button>
             </form>
           )}
-         
         </Modal>
       )}
-      
+      <Footer/>
     </>
   );
 };
 
 export default ServiceDetails;
-
