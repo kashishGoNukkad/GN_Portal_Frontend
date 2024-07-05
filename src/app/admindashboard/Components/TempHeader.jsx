@@ -73,8 +73,12 @@ const TempHeader = () => {
   const [isOtpGenerated, setIsOtpGenerated] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [openDropdown, setOpenDropdown] = useState(null);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+  const toggleDropdown = (dropdown) => {
+    setOpenDropdown(openDropdown === dropdown ? null : dropdown);
   };
   useEffect(() => {
     const isNameValid = name.trim() !== "";
@@ -113,7 +117,7 @@ const TempHeader = () => {
       setName("");
       setmobile("");
       setEmail("");
-      // setEmail2('')
+   
     } catch (error) {
       console.log(error);
     }
@@ -222,7 +226,7 @@ const TempHeader = () => {
         <div className="flex justify-between items-center p-6">
           <div className="flex justify-center items-center gap-16">
             <Image src={logo} alt="Picture of the author" />
-            <div className="hidden md:flex items-center">
+            {/* <div className="hidden md:flex items-center">
               <ul className="relative flex justify-center items-center">
                 <li className="group tex-lg">
                   <a
@@ -231,7 +235,7 @@ const TempHeader = () => {
                   >
                     Home
                   </a>
-                  <div className="absolute left-0 mt-2 w-48 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className=" absolute left-0 mt-2 w-48 rounded shadow-lg bg-white group-hover:opacity-100 transition-opacity duration-300">
                     <span className="hover:bg-red-300">
                       <a href="#">
                         <div className="block px-4 py-2  border-b-2">
@@ -241,7 +245,7 @@ const TempHeader = () => {
                     </span>
                     <a
                       href="#"
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      className="z-50 block px-4 py-2 text-gray-800 hover:bg-gray-100"
                     >
                       Home 2
                     </a>
@@ -251,7 +255,7 @@ const TempHeader = () => {
                   <a href="#" className="inline-block  px-4 py-2">
                     Pages
                   </a>
-                  <div className="absolute left-24 mt-2 w-48 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="z-50 absolute left-24 mt-2 w-48 rounded shadow-lg bg-white group-hover:opacity-100 transition-opacity duration-300">
                     <a
                       href="#"
                       className="block px-4 py-2 text-gray-800 border-b-2"
@@ -270,7 +274,7 @@ const TempHeader = () => {
                   <a href="#" className="inline-block px-4 py-2">
                     Profile
                   </a>
-                  <div className="absolute left-48 mt-2 w-48 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className=" z-50 absolute left-48 mt-2 w-48 rounded shadow-lg bg-white group-hover:opacity-100 transition-opacity duration-300">
                     <a
                       href="#"
                       className="block px-4 py-2 text-gray-800 border-b-2"
@@ -279,7 +283,7 @@ const TempHeader = () => {
                     </a>
                     <a
                       href="#"
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      className=" block px-4 py-2 text-gray-800 hover:bg-gray-100"
                     >
                       Home 2
                     </a>
@@ -289,7 +293,7 @@ const TempHeader = () => {
                   <a href="#" className="inline-block px-4 py-2">
                     Job
                   </a>
-                  <div className="absolute left-72 mt-2 w-48 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="z-50 absolute left-72 mt-2 w-48 rounded shadow-lg bg-white group-hover:opacity-100 transition-opacity duration-300">
                     <a
                       href="#"
                       className="block px-4 py-2 text-gray-800 border-b-2"
@@ -308,7 +312,7 @@ const TempHeader = () => {
                   <a href="#" className="inline-block px-4 py-2">
                     Contact
                   </a>
-                  <div className="absolute left-86 mt-2 w-48 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="z-50 absolute left-86 mt-2 w-48 rounded shadow-lg bg-white group-hover:opacity-100 transition-opacity duration-300">
                     <a
                       href="#"
                       className="block px-4 py-2 text-gray-800 border-b-2"
@@ -324,7 +328,121 @@ const TempHeader = () => {
                   </div>
                 </li>
               </ul>
+            </div> */}
+            <div className="hidden md:flex items-center">
+      <ul className="relative flex justify-center items-center">
+        <li className="group tex-lg">
+          <a
+            href="#"
+            className="inline-block px-4 py-2 text-yellow-400"
+            onClick={() => toggleDropdown('home')}
+          >
+            Home
+          </a>
+          {openDropdown === 'home' && (
+            <div className="absolute left-0 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
+              <span className="hover:bg-red-300">
+                <a href="#">
+                  <div className="block px-4 py-2 border-b-2">
+                    Home 1
+                  </div>
+                </a>
+              </span>
+              <a
+                href="#"
+                className="z-50 block px-4 py-2 text-gray-800 hover:bg-gray-100"
+              >
+                Home 2
+              </a>
             </div>
+          )}
+        </li>
+        <li className="group">
+          <a href="#" className="inline-block px-4 py-2" onClick={() => toggleDropdown('pages')}>
+            Pages
+          </a>
+          {openDropdown === 'pages' && (
+            <div className="z-50 absolute left-24 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
+              <a
+                href="#"
+                className="block px-4 py-2 text-gray-800 border-b-2"
+              >
+                Home 1
+              </a>
+              <a
+                href="#"
+                className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+              >
+                Home 2
+              </a>
+            </div>
+          )}
+        </li>
+        <li className="group">
+          <a href="#" className="inline-block px-4 py-2" onClick={() => toggleDropdown('profile')}>
+            Profile
+          </a>
+          {openDropdown === 'profile' && (
+            <div className="z-50 absolute left-48 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
+              <a
+                href="#"
+                className="block px-4 py-2 text-gray-800 border-b-2"
+              >
+                Home 1
+              </a>
+              <a
+                href="#"
+                className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+              >
+                Home 2
+              </a>
+            </div>
+          )}
+        </li>
+        <li className="group">
+          <a href="#" className="inline-block px-4 py-2" onClick={() => toggleDropdown('job')}>
+            Job
+          </a>
+          {openDropdown === 'job' && (
+            <div className="z-50 absolute left-72 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
+              <a
+                href="#"
+                className="block px-4 py-2 text-gray-800 border-b-2"
+              >
+                Home 1
+              </a>
+              <a
+                href="#"
+                className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+              >
+                Home 2
+              </a>
+            </div>
+          )}
+        </li>
+        <li className="group">
+          <a href="#" className="inline-block px-4 py-2" onClick={() => toggleDropdown('contact')}>
+            Contact
+          </a>
+          {openDropdown === 'contact' && (
+            <div className="z-50 absolute left-86 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
+              <a
+                href="#"
+                className="block px-4 py-2 text-gray-800 border-b-2"
+              >
+                Home 1
+              </a>
+              <a
+                href="#"
+                className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+              >
+                Home 2
+              </a>
+            </div>
+          )}
+        </li>
+      </ul>
+    </div>
           </div>
           <div className="flex justify-center items-center gap-8">
             {/* {
