@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import Modal from "../../../admindashboard/Components/Modal";
 import axios from 'axios';
 import Footer from '@/app/admindashboard/Components/Footer';
+import Bike from '../../../../../public/assets/Bike.jpeg';
+import Image from 'next/image';
 
 const ServiceDetails = () => {
   const router = useRouter();
@@ -189,15 +191,12 @@ const ServiceDetails = () => {
   return (
     <>
       <TempHeader />
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-3xl w-full">
-          <div className="flex flex-col md:flex-row">
-            <img
-              src={service.image}
-              alt={service.name}
-              className="w-full md:w-1/2 rounded-lg mb-4 md:mb-0 md:mr-8"
-            />
-            <div className="flex flex-col justify-between">
+      <div className="min-h-screen bg-gray-100  p-4">
+        {/* <div className="bg-red-100 rounded-lg shadow-lg p-8 max-w-3xl w-full"> */}
+          <div className="flex flex-col md:flex-row ">
+           
+           <Image src={Bike} className="w-full md:w-1/2 rounded-lg mb-4 md:mb-0 md:mr-8"></Image>
+            <div className="flex flex-col  p-9">
               <div>
                 <h1 className="text-4xl font-bold text-gray-800 mb-4">{service.name}</h1>
                 <p className="text-lg mb-2"><strong>Category:</strong> {service.category}</p>
@@ -222,7 +221,7 @@ const ServiceDetails = () => {
             </div>
           </div>
         </div>
-      </div>
+   {/* </div> */}
 
       {isStatus200 && (
         <div ref={formRef} className="bg-white rounded-lg shadow-lg p-8 max-w-3xl w-full mt-8 mx-auto">
