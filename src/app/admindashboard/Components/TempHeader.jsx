@@ -11,6 +11,8 @@ import { RiAdminLine } from "react-icons/ri";
 import mobileSide from "../Components/mobileSide";
 import { PiGreaterThanLight } from "react-icons/pi";
 import toast from "react-hot-toast";
+
+
 const MobileSide = ({ isOpen, toggleSidebar }) => {
   return (
     <div
@@ -59,8 +61,9 @@ const MobileSide = ({ isOpen, toggleSidebar }) => {
   );
 };
 
-const TempHeader = () => {
+const TempHeader = ({ onProfileClick, kashish}) => {
   const [modal, setModal] = useState(false);
+  
   const [name, setName] = useState("");
   const [mobile, setmobile] = useState("");
   const [email, setEmail] = useState("");
@@ -73,6 +76,11 @@ const TempHeader = () => {
   const [isOtpGenerated, setIsOtpGenerated] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [tempData, setTempData] = useState({
+    name: "",
+    mobile: "",
+    email: ""
+  });
   const [openDropdown, setOpenDropdown] = useState(null);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -93,7 +101,17 @@ const TempHeader = () => {
     setIsButtonDisabled(!(isNameValid && isPhoneValid && isEmailValid));
   }, [name, mobile, email, email2]);
 
+console.log(kashish);
+  const handleData = () => {
+    setTempData({
+      name,
+      mobile,
+      email
+    });
+  };
+
   const handleSubmit = (event) => {
+    
     event.preventDefault();
     try {
       const isNameValid = name.trim() !== "";
@@ -113,10 +131,12 @@ const TempHeader = () => {
       }
 
       // Handle form submission logic here
-      console.log({ name, mobile, email });
+      // console.log({ name, mobile, email });
       setName("");
       setmobile("");
       setEmail("");
+      handleData();
+// console.log(tempData);
    
     } catch (error) {
       console.log(error);
@@ -226,109 +246,7 @@ const TempHeader = () => {
         <div className="flex justify-between items-center p-6">
           <div className="flex justify-center items-center gap-16">
             <Image src={logo} alt="Picture of the author" />
-            {/* <div className="hidden md:flex items-center">
-              <ul className="relative flex justify-center items-center">
-                <li className="group tex-lg">
-                  <a
-                    href="#"
-                    className="inline-block px-4 py-2 text-yellow-400"
-                  >
-                    Home
-                  </a>
-                  <div className=" absolute left-0 mt-2 w-48 rounded shadow-lg bg-white group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="hover:bg-red-300">
-                      <a href="#">
-                        <div className="block px-4 py-2  border-b-2">
-                          Home 1
-                        </div>
-                      </a>
-                    </span>
-                    <a
-                      href="#"
-                      className="z-50 block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                    >
-                      Home 2
-                    </a>
-                  </div>
-                </li>
-                <li className="group">
-                  <a href="#" className="inline-block  px-4 py-2">
-                    Pages
-                  </a>
-                  <div className="z-50 absolute left-24 mt-2 w-48 rounded shadow-lg bg-white group-hover:opacity-100 transition-opacity duration-300">
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-800 border-b-2"
-                    >
-                      Home 1
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                    >
-                      Home 2
-                    </a>
-                  </div>
-                </li>
-                <li className="group">
-                  <a href="#" className="inline-block px-4 py-2">
-                    Profile
-                  </a>
-                  <div className=" z-50 absolute left-48 mt-2 w-48 rounded shadow-lg bg-white group-hover:opacity-100 transition-opacity duration-300">
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-800 border-b-2"
-                    >
-                      Home 1
-                    </a>
-                    <a
-                      href="#"
-                      className=" block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                    >
-                      Home 2
-                    </a>
-                  </div>
-                </li>
-                <li className="group">
-                  <a href="#" className="inline-block px-4 py-2">
-                    Job
-                  </a>
-                  <div className="z-50 absolute left-72 mt-2 w-48 rounded shadow-lg bg-white group-hover:opacity-100 transition-opacity duration-300">
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-800 border-b-2"
-                    >
-                      Home 1
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                    >
-                      Home 2
-                    </a>
-                  </div>
-                </li>
-                <li className="group">
-                  <a href="#" className="inline-block px-4 py-2">
-                    Contact
-                  </a>
-                  <div className="z-50 absolute left-86 mt-2 w-48 rounded shadow-lg bg-white group-hover:opacity-100 transition-opacity duration-300">
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-800 border-b-2"
-                    >
-                      Home 1
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                    >
-                      Home 2
-                    </a>
-                  </div>
-                </li>
-              </ul>
-            </div> */}
+            
             <div className="hidden md:flex items-center">
       <ul className="relative flex justify-center items-center">
         <li className="group tex-lg">
@@ -445,38 +363,7 @@ const TempHeader = () => {
     </div>
           </div>
           <div className="flex justify-center items-center gap-8">
-            {/* {
-              isLoggedIn ? (<button
-                onClick={() => setModal(true)}
-                className="bg-yellow-400 rounded-lg flex justify-center items-center px-6 py-2 gap-2 text-center"
-              >
-                <RiAdminFill />
-                <span>login</span>
-              </button>) : (
-                <>
-                  <div onClick={handlebox} className="relative  size-30 cursor-pointer rounded-full px-4 py-4 bg-gray-300">
-                    <FaUserAlt className="text-gray-400" />
-                  </div>
-                </>
-              )
-            } */}
-
-            {/* {
-              isLoggedIn ? (
-                <div onClick={handlebox} className="relative size-30 cursor-pointer rounded-full px-4 py-4 bg-gray-300">
-                <FaUserAlt className="text-gray-400" />
-                
-              </div>
-              ) : (
-                <button
-                onClick={() => setModal(true)}
-                className="bg-yellow-400 rounded-lg flex justify-center items-center px-6 py-2 gap-2 text-center"
-              >
-                <RiAdminFill />
-                <span>Login</span>
-              </button>
-              )
-            } */}
+            
             {isLoggedIn ? (
               <div
                 onClick={handlebox}
@@ -489,6 +376,9 @@ const TempHeader = () => {
                   } top-10 px-4 py-2 bg-white right-12 border rounded-md border-gray-100 shadow-xl`}
                 >
                   <ul className="text-sm flex flex-col gap-4">
+                    <li className="cursor-pointer">
+                      <a onClick={onProfileClick} >My Profile</a>
+                    </li>
                     <li className="cursor-pointer">
                       <a href="#">Orders</a>
                     </li>
@@ -519,18 +409,7 @@ const TempHeader = () => {
             <div className="bg-black w-6 h-1"></div>
           </button>
 
-          {/* mobile sidebar menu */}
-
-          {/* logout box */}
-          {/* <div className={`z-50 absolute w-36 ${box?"block":"hidden"} top-20  px-4 py-2 right-16 border rounded-md border-gray-100 shadow-xl`}>
-
-            <ul className="text-sm flex flex-col gap-4">
-
-              <li className="cursor-pointer"><a href=""></a>Orders</li>
-              <li className="cursor-pointer" onClick={handleLogout}  ><a href=""></a>logout</li>
-            </ul>
-
-          </div> */}
+          
         </div>
         <Modal Isvisible={modal} onclose={() => setModal(false)}>
           {isOtpGenerated ? (
@@ -573,7 +452,7 @@ const TempHeader = () => {
                     placeholder=" "
                     required
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => {setName(e.target.value);handleData();}}
                   />
                   <label
                     htmlFor="name"
@@ -590,7 +469,7 @@ const TempHeader = () => {
                     placeholder=" "
                     required
                     value={mobile}
-                    onChange={(e) => setmobile(e.target.value)}
+                    onChange={(e) =>{ setmobile(e.target.value);handleData();}}
                   />
                   <label
                     htmlFor="mobile"
@@ -606,7 +485,7 @@ const TempHeader = () => {
                     className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder=""
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) =>{ setEmail(e.target.value);handleData();}}
                   />
                   <label
                     htmlFor="Email"
@@ -628,6 +507,7 @@ const TempHeader = () => {
         <mobileSide />
       </header>
       <MobileSide isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      
     </>
   );
 };

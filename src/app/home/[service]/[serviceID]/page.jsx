@@ -8,6 +8,8 @@ import axios from 'axios';
 import Footer from '@/app/admindashboard/Components/Footer';
 import Bike from '../../../../../public/assets/Bike.jpeg';
 import Image from 'next/image';
+import ProfileModal from '@/app/admindashboard/Components/profileModal';
+// import TempHeader from '@/app/admindashboard/Components/TempHeader';
 
 const ServiceDetails = () => {
   const router = useRouter();
@@ -28,11 +30,25 @@ const ServiceDetails = () => {
   const [box, setBox] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [useLastAddress, setUseLastAddress] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tempData, settempData] = useState({
+    name: '', 
+    mobile: '',
+    email: '',
+   
+  });
+  const [profileData, setProfileData] = useState({
+    name: 'John Doe', // Replace with actual user data
+    mobile: '123-456-7890',
+    email: 'john.doe@example.com',
+    address: '',
+  });
   const [lastAddress, setLastAddress] = useState({
     city: '',
     state: '',
     pincode: ''
   });
+
 
   const formRef = useRef(null);
 
@@ -114,6 +130,21 @@ const ServiceDetails = () => {
     }
   };
 
+  
+  const handleMyProfileClick = () => {
+    // Check if user is logged in (pseudo-code, replace with actual logic)
+    const userLoggedIn = true;
+    if (userLoggedIn) {
+      setIsModalOpen(true);
+    } else {
+      alert('Please log in to view your profile.');
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
   const HandleOtpChange = (e) => {
     setOtp(e.target.value);
     if (e.target.value.length < 4) {
@@ -190,7 +221,8 @@ const ServiceDetails = () => {
 
   return (
     <>
-      <TempHeader />
+      {/* <TempHeader /> */}
+            <TempHeader onProfileClick={handleMyProfileClick} data={tempData}/>
       <div className="min-h-screen bg-gray-100  p-4">
         {/* <div className="bg-red-100 rounded-lg shadow-lg p-8 max-w-3xl w-full"> */}
           <div className="flex flex-col md:flex-row ">
@@ -453,6 +485,7 @@ const ServiceDetails = () => {
           )}
         </Modal>
       )}
+      <ProfileModal isOpen={isModalOpen} onClose={handleModalClose} tempData={tempData} />
       <Footer/>
     </>
   );
