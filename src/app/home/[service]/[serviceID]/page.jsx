@@ -1,4 +1,5 @@
 'use client'
+import { useSelector } from 'react-redux';
 import React, { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import TempHeader from '@/app/admindashboard/Components/TempHeader';
@@ -9,9 +10,16 @@ import Footer from '@/app/admindashboard/Components/Footer';
 import Bike from '../../../../../public/assets/Bike.jpeg';
 import Image from 'next/image';
 import ProfileModal from '@/app/admindashboard/Components/profileModal';
-// import TempHeader from '@/app/admindashboard/Components/TempHeader';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../../../Redux/Slices/authSlice'
+
+
 
 const ServiceDetails = () => {
+  const { user, sessionId, status } = useSelector((state) => state.auth);
+
+  // console.log("user from redux service",user)
+  const dispatch = useDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
   const servicename = searchParams.get('servicename');
@@ -31,6 +39,7 @@ const ServiceDetails = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [useLastAddress, setUseLastAddress] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [tempData, settempData] = useState({
     name: '', 
     mobile: '',
@@ -70,9 +79,14 @@ const ServiceDetails = () => {
         // If the form is invalid, do not proceed
         return;
       }
+      settempData({
+        name: name,
+        mobile: mobile,
+        email: email
+      })
 
       // Handle form submission logic here
-      console.log({ name, mobile, email });
+      // console.log({ name, mobile, email });
       setName("");
       setMobile("");
       setEmail("");
@@ -87,7 +101,7 @@ const ServiceDetails = () => {
         name,
         mobile,
         email,
-      });
+      });    
       setIsOtpGenerated(true);
       if (response.status === 200) {
         setEmail2(email);
@@ -97,8 +111,10 @@ const ServiceDetails = () => {
       console.log(error);
     }
   };
-
+  // console.log("before",isLoggedIn)
+  const[demodata,setdemodata]=useState(false);
   const OtpVerify = async (event) => {
+    
     event.preventDefault();
     try {
       const response = await axios.post(
@@ -113,7 +129,10 @@ const ServiceDetails = () => {
       );
 
       if (response.status === 200) {
+        setdemodata(true)
         setIsLoggedIn(true);
+        dispatch(loginSuccess(response.data));
+        // console.log("after loggin",isLoggedIn)
         setIsOtpGenerated(false);
         setModal(false);
         setOtp("");
@@ -154,6 +173,7 @@ const ServiceDetails = () => {
 
   const handleLogin = () => {
     setIsLoggedIn(true);
+    
   };
 
   const handleBox = () => {
@@ -222,7 +242,7 @@ const ServiceDetails = () => {
   return (
     <>
       {/* <TempHeader /> */}
-            <TempHeader onProfileClick={handleMyProfileClick} data={tempData}/>
+            <TempHeader onProfileClick={handleMyProfileClick} data={tempData} demodata={demodata}/>
       <div className="min-h-screen bg-gray-100  p-4">
         {/* <div className="bg-red-100 rounded-lg shadow-lg p-8 max-w-3xl w-full"> */}
           <div className="flex flex-col md:flex-row ">
@@ -485,7 +505,7 @@ const ServiceDetails = () => {
           )}
         </Modal>
       )}
-      <ProfileModal isOpen={isModalOpen} onClose={handleModalClose} tempData={tempData} />
+      <ProfileModal isOpen={isModalOpen} onClose={handleModalClose} data={tempData} />
       <Footer/>
     </>
   );

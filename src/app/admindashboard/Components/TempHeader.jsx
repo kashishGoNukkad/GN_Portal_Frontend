@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { useSelector } from 'react-redux';
 import React, { useEffect, useState } from "react";
 import logo from "../../../../public/assets/logo-dark.png";
 import { FaUserAlt } from "react-icons/fa";
@@ -11,14 +12,14 @@ import { RiAdminLine } from "react-icons/ri";
 import mobileSide from "../Components/mobileSide";
 import { PiGreaterThanLight } from "react-icons/pi";
 import toast from "react-hot-toast";
-
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../../Redux/Slices/authSlice'
 
 const MobileSide = ({ isOpen, toggleSidebar }) => {
   return (
     <div
-      className={`fixed top-0 left-0 h-full w-64  bg-white text-black transform ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      } transition-transform duration-300 ease-in-out z-50`}
+      className={`fixed top-0 left-0 h-full w-64  bg-white text-black transform ${isOpen ? "translate-x-0" : "-translate-x-full"
+        } transition-transform duration-300 ease-in-out z-50`}
     >
       <button
         className="absolute top-0 right-4 text-2xl"
@@ -61,9 +62,10 @@ const MobileSide = ({ isOpen, toggleSidebar }) => {
   );
 };
 
-const TempHeader = ({ onProfileClick, kashish}) => {
+const TempHeader = ({ onProfileClick, data,demodata }) => {
+ 
   const [modal, setModal] = useState(false);
-  
+  const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [mobile, setmobile] = useState("");
   const [email, setEmail] = useState("");
@@ -76,11 +78,26 @@ const TempHeader = ({ onProfileClick, kashish}) => {
   const [isOtpGenerated, setIsOtpGenerated] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [cookieValue, setCookieValue] = useState('')
   const [tempData, setTempData] = useState({
     name: "",
     mobile: "",
     email: ""
   });
+  useEffect(()=>{
+    if(demodata){
+      setIsLoggedIn(true)
+    }
+  },[demodata])
+  useEffect(() => {
+    setCookieValue(data || '')
+  }, [data]);
+
+  
+
+  console.log('MY DATA: ', data)
+
+
   const [openDropdown, setOpenDropdown] = useState(null);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -101,17 +118,17 @@ const TempHeader = ({ onProfileClick, kashish}) => {
     setIsButtonDisabled(!(isNameValid && isPhoneValid && isEmailValid));
   }, [name, mobile, email, email2]);
 
-console.log(kashish);
-  const handleData = () => {
-    setTempData({
-      name,
-      mobile,
-      email
-    });
-  };
+
+  // const handleData = () => {
+  //   setTempData({
+  //     name,
+  //     mobile,
+  //     email
+  //   });
+  // };
 
   const handleSubmit = (event) => {
-    
+
     event.preventDefault();
     try {
       const isNameValid = name.trim() !== "";
@@ -130,14 +147,19 @@ console.log(kashish);
         return;
       }
 
-      // Handle form submission logic here
-      // console.log({ name, mobile, email });
+      setTempData({
+        name: name,
+        mobile: mobile,
+        email: email
+      })
+
+        ;
       setName("");
       setmobile("");
       setEmail("");
       handleData();
-// console.log(tempData);
-   
+
+
     } catch (error) {
       console.log(error);
     }
@@ -145,6 +167,10 @@ console.log(kashish);
   const handlebox = () => {
     setBox(!box);
   };
+
+  // const handleModalClose=()=>{
+  //   setIsMod
+  // }
 
   const OtpGenerate = async () => {
     try {
@@ -155,14 +181,15 @@ console.log(kashish);
       });
       setIsOtpGenerated(true);
       if (response.status === 200) {
+
         setEmail2(email);
       }
-      console.log("response", response);
-      // setOtp()
+
     } catch (error) {
       console.log(error);
     }
   };
+
   const OtpVerify = async (event) => {
     event.preventDefault();
     try {
@@ -176,9 +203,11 @@ console.log(kashish);
           withCredentials: true, // Include credentials (cookies)
         }
       );
-
+      console.log("reposne", response)
       if (response.status === 200) {
         setIsLoggedIn(true);
+
+        dispatch(loginSuccess(response.data));
         setIsOtpGenerated(false);
         setModal(false);
         setOtp("");
@@ -188,13 +217,15 @@ console.log(kashish);
     } catch (error) {
       if (error.response && error.response.status === 400) {
         setIsLoggedIn(false);
+        // dispatch(loginFailure(error.message));
         setErrorMessage("Invalid or expired OTP");
-       
+
       } else {
         console.log("error", error);
       }
     }
   };
+  const { user, sessionId, status } = useSelector((state) => state.auth);
 
   const handleLogin = () => {
     setIsLoggedIn(true);
@@ -203,6 +234,7 @@ console.log(kashish);
   useEffect(() => {
     const checkSession = async () => {
       try {
+
         const response = await axios.get("http://localhost:3001/protected", {
           withCredentials: true,
         });
@@ -217,6 +249,7 @@ console.log(kashish);
   }, []);
 
   const handleLogout = async () => {
+
     try {
       const response = await axios.post(
         "http://localhost:3001/api2/logout",
@@ -225,6 +258,9 @@ console.log(kashish);
           withCredentials: true,
         }
       );
+      console.log("redux data after logout:", user)
+      dispatch({ type: 'RESET_STATE' });
+
       if (response.status === 200) {
         setIsLoggedIn(false);
         setBox(false);
@@ -233,9 +269,9 @@ console.log(kashish);
       console.log("Logout failed", error);
     }
   };
-  const HandleOtpChange = (e)=>{
+  const HandleOtpChange = (e) => {
     setOtp(e.target.value);
-    if(e.target.value.length < 4){
+    if (e.target.value.length < 4) {
       setErrorMessage('')
     }
   }
@@ -246,134 +282,133 @@ console.log(kashish);
         <div className="flex justify-between items-center p-6">
           <div className="flex justify-center items-center gap-16">
             <Image src={logo} alt="Picture of the author" />
-            
+
             <div className="hidden md:flex items-center">
-      <ul className="relative flex justify-center items-center">
-        <li className="group tex-lg">
-          <a
-            href="#"
-            className="inline-block px-4 py-2 text-yellow-400"
-            onClick={() => toggleDropdown('home')}
-          >
-            Home
-          </a>
-          {openDropdown === 'home' && (
-            <div className="absolute left-0 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
-              <span className="hover:bg-red-300">
-                <a href="#">
-                  <div className="block px-4 py-2 border-b-2">
-                    Home 1
-                  </div>
-                </a>
-              </span>
-              <a
-                href="#"
-                className="z-50 block px-4 py-2 text-gray-800 hover:bg-gray-100"
-              >
-                Home 2
-              </a>
+              <ul className="relative flex justify-center items-center">
+                <li className="group tex-lg">
+                  <a
+                    href="#"
+                    className="inline-block px-4 py-2 text-yellow-400"
+                    onClick={() => toggleDropdown('home')}
+                  >
+                    Home
+                  </a>
+                  {openDropdown === 'home' && (
+                    <div className="absolute left-0 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
+                      <span className="hover:bg-red-300">
+                        <a href="#">
+                          <div className="block px-4 py-2 border-b-2">
+                            Home 1
+                          </div>
+                        </a>
+                      </span>
+                      <a
+                        href="#"
+                        className="z-50 block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      >
+                        Home 2
+                      </a>
+                    </div>
+                  )}
+                </li>
+                <li className="group">
+                  <a href="#" className="inline-block px-4 py-2" onClick={() => toggleDropdown('pages')}>
+                    Pages
+                  </a>
+                  {openDropdown === 'pages' && (
+                    <div className="z-50 absolute left-24 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
+                      <a
+                        href="#"
+                        className="block px-4 py-2 text-gray-800 border-b-2"
+                      >
+                        Home 1
+                      </a>
+                      <a
+                        href="#"
+                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      >
+                        Home 2
+                      </a>
+                    </div>
+                  )}
+                </li>
+                <li className="group">
+                  <a href="#" className="inline-block px-4 py-2" onClick={() => toggleDropdown('profile')}>
+                    Profile
+                  </a>
+                  {openDropdown === 'profile' && (
+                    <div className="z-50 absolute left-48 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
+                      <a
+                        href="#"
+                        className="block px-4 py-2 text-gray-800 border-b-2"
+                      >
+                        Home 1
+                      </a>
+                      <a
+                        href="#"
+                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      >
+                        Home 2
+                      </a>
+                    </div>
+                  )}
+                </li>
+                <li className="group">
+                  <a href="#" className="inline-block px-4 py-2" onClick={() => toggleDropdown('job')}>
+                    Job
+                  </a>
+                  {openDropdown === 'job' && (
+                    <div className="z-50 absolute left-72 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
+                      <a
+                        href="#"
+                        className="block px-4 py-2 text-gray-800 border-b-2"
+                      >
+                        Home 1
+                      </a>
+                      <a
+                        href="#"
+                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      >
+                        Home 2
+                      </a>
+                    </div>
+                  )}
+                </li>
+                <li className="group">
+                  <a href="#" className="inline-block px-4 py-2" onClick={() => toggleDropdown('contact')}>
+                    Contact
+                  </a>
+                  {openDropdown === 'contact' && (
+                    <div className="z-50 absolute left-86 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
+                      <a
+                        href="#"
+                        className="block px-4 py-2 text-gray-800 border-b-2"
+                      >
+                        Home 1
+                      </a>
+                      <a
+                        href="#"
+                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      >
+                        Home 2
+                      </a>
+                    </div>
+                  )}
+                </li>
+              </ul>
             </div>
-          )}
-        </li>
-        <li className="group">
-          <a href="#" className="inline-block px-4 py-2" onClick={() => toggleDropdown('pages')}>
-            Pages
-          </a>
-          {openDropdown === 'pages' && (
-            <div className="z-50 absolute left-24 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
-              <a
-                href="#"
-                className="block px-4 py-2 text-gray-800 border-b-2"
-              >
-                Home 1
-              </a>
-              <a
-                href="#"
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-              >
-                Home 2
-              </a>
-            </div>
-          )}
-        </li>
-        <li className="group">
-          <a href="#" className="inline-block px-4 py-2" onClick={() => toggleDropdown('profile')}>
-            Profile
-          </a>
-          {openDropdown === 'profile' && (
-            <div className="z-50 absolute left-48 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
-              <a
-                href="#"
-                className="block px-4 py-2 text-gray-800 border-b-2"
-              >
-                Home 1
-              </a>
-              <a
-                href="#"
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-              >
-                Home 2
-              </a>
-            </div>
-          )}
-        </li>
-        <li className="group">
-          <a href="#" className="inline-block px-4 py-2" onClick={() => toggleDropdown('job')}>
-            Job
-          </a>
-          {openDropdown === 'job' && (
-            <div className="z-50 absolute left-72 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
-              <a
-                href="#"
-                className="block px-4 py-2 text-gray-800 border-b-2"
-              >
-                Home 1
-              </a>
-              <a
-                href="#"
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-              >
-                Home 2
-              </a>
-            </div>
-          )}
-        </li>
-        <li className="group">
-          <a href="#" className="inline-block px-4 py-2" onClick={() => toggleDropdown('contact')}>
-            Contact
-          </a>
-          {openDropdown === 'contact' && (
-            <div className="z-50 absolute left-86 mt-2 w-48 rounded shadow-lg bg-white transition-opacity duration-300">
-              <a
-                href="#"
-                className="block px-4 py-2 text-gray-800 border-b-2"
-              >
-                Home 1
-              </a>
-              <a
-                href="#"
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-              >
-                Home 2
-              </a>
-            </div>
-          )}
-        </li>
-      </ul>
-    </div>
           </div>
           <div className="flex justify-center items-center gap-8">
-            
-            {isLoggedIn ? (
+
+            {(isLoggedIn || cookieValue.length > 0) ? (
               <div
                 onClick={handlebox}
                 className="relative size-30 cursor-pointer rounded-full px-4 py-4 bg-gray-300"
               >
                 <FaUserAlt className="text-gray-400" />
                 <div
-                  className={`z-50 absolute w-36 ${
-                    box ? "block" : "hidden"
-                  } top-10 px-4 py-2 bg-white right-12 border rounded-md border-gray-100 shadow-xl`}
+                  className={`z-50 absolute w-36 ${box ? "block" : "hidden"
+                    } top-10 px-4 py-2 bg-white right-12 border rounded-md border-gray-100 shadow-xl`}
                 >
                   <ul className="text-sm flex flex-col gap-4">
                     <li className="cursor-pointer">
@@ -409,7 +444,7 @@ console.log(kashish);
             <div className="bg-black w-6 h-1"></div>
           </button>
 
-          
+
         </div>
         <Modal Isvisible={modal} onclose={() => setModal(false)}>
           {isOtpGenerated ? (
@@ -427,7 +462,7 @@ console.log(kashish);
                     required
                     value={otp}
                     onChange={HandleOtpChange}
-                    // onChange={(e) => setOtp(e.target.value)}
+                  // onChange={(e) => setOtp(e.target.value)}
                   />
                 </div>
                 {errorMessage && <div className="text-sm text-red-500">{errorMessage}</div>}
@@ -452,7 +487,7 @@ console.log(kashish);
                     placeholder=" "
                     required
                     value={name}
-                    onChange={(e) => {setName(e.target.value);handleData();}}
+                    onChange={(e) => { setName(e.target.value) }}
                   />
                   <label
                     htmlFor="name"
@@ -469,7 +504,7 @@ console.log(kashish);
                     placeholder=" "
                     required
                     value={mobile}
-                    onChange={(e) =>{ setmobile(e.target.value);handleData();}}
+                    onChange={(e) => { setmobile(e.target.value); }}
                   />
                   <label
                     htmlFor="mobile"
@@ -485,7 +520,7 @@ console.log(kashish);
                     className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder=""
                     value={email}
-                    onChange={(e) =>{ setEmail(e.target.value);handleData();}}
+                    onChange={(e) => { setEmail(e.target.value) }}
                   />
                   <label
                     htmlFor="Email"
@@ -507,7 +542,7 @@ console.log(kashish);
         <mobileSide />
       </header>
       <MobileSide isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      
+
     </>
   );
 };

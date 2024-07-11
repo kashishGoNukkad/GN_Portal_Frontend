@@ -6,7 +6,7 @@ import men from "../../../../public/assets/1.png";
 import downarrow from "../../../../public/assets/Category/down.png";
 import axios from "axios";
 import Link from "next/link";
-import { searchResult } from "../../Redux/slice"
+import { searchResult } from "../../Redux/Slices/slice"
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 const SearchComponent = () => {

@@ -38,22 +38,7 @@ export default function RootLayout({ children }) {
     "/forgetpassword",
   ];
 
-//   const router = useRouter()
 
-//   axios.defaults.withCredentials = true;
-//   useEffect(() => {
-//       axios.get('http://localhost:3001/admindashboard/users')
-//       .then(res => {
-         
-//           console.log("res")
-//           if(res.data.valid) {
-//               setMessage(res.data.message)
-//           } else {
-//               router.push('/')
-//           }
-//       })
-//       .catch(err => console.log(err))
-//   })
   const hideHeader = hideHeaderRoutes.includes(pathname);
   const prodata="admin"
 

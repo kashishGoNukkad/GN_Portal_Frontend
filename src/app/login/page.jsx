@@ -9,7 +9,7 @@ import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 // import {useUser}  from '../context/userContext'
 import { useUser } from "../context/userContext";
-import { AddRole, userId } from "../Redux/slice";
+import { AddRole, userId } from "../Redux/Slices/slice";
 import { useDispatch } from "react-redux";
 
 export default function SignUp() {

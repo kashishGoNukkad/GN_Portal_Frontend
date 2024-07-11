@@ -1,8 +1,9 @@
+
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Providers } from "./Redux/providers";
-
-
+import { Providers } from "../../src/app/Redux/providers";
+import { store } from "../app/Redux/store";
+// import { useSessionCheck } from '../app/Redux/hooks/useSessionCheck';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -11,27 +12,23 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-
+ 
 
   
   return (
     <html lang="en">
       {/* <head>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.css" />
+     
       </head> */}
       {/* <body className={inter.className}>{children}</body> */}
       <body className="font-mulish">
-        {/* Wrap the children with UserProvider */}
-        <Providers>
+        
+        <Providers >
+          
         {children}
         </Providers>
           
-       <script>
      
-       </script>
       </body>
 
     </html>
